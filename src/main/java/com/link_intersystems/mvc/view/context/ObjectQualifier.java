@@ -41,7 +41,7 @@ public class ObjectQualifier<T> {
 
     @Override
     public String toString() {
-        return "ModelQualifier{" +
+        return "ObjectQualifier{" +
                 getType().getName() +
                 "<" + getName() + '>' +
                 '}';

@@ -8,13 +8,13 @@ public class ViewContextListenerMock<T> implements ViewContextListener<T> {
     private LinkedList<T> models = new LinkedList<>();
 
     @Override
-    public void modelAdded(T model) {
-        models.add(model);
+    public void objectAdded(ViewContext viewContext, T object) {
+        models.add(object);
     }
 
     @Override
-    public void modelRemoved(T model) {
-        models.remove(model);
+    public void objectRemoved(ViewContext viewContext, T object) {
+        models.remove(object);
     }
 
     public List<T> getModels() {

@@ -1,9 +1,6 @@
 package com.link_intersystems.mvc.view.context.dsl;
 
-import com.link_intersystems.mvc.view.context.DefaultViewContext;
-import com.link_intersystems.mvc.view.context.ObjectQualifier;
-import com.link_intersystems.mvc.view.context.ViewContext;
-import com.link_intersystems.mvc.view.context.ViewContextListener;
+import com.link_intersystems.mvc.view.context.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +27,18 @@ public class ViewContextMediator {
         }
 
         @Override
-        public void modelAdded(T model) {
+        public void objectAdded(ViewContext viewContext, T object) {
             if (onModelAdded != null) {
-                onModelAdded.accept(model);
+                onModelAdded.accept(object);
             }
 
-            this.setModel = model;
+            this.setModel = object;
         }
 
         @Override
-        public void modelRemoved(T model) {
+        public void objectRemoved(ViewContext viewContext, T object) {
             if (onModelRemoved != null) {
-                onModelRemoved.accept(model);
+                onModelRemoved.accept(object);
             }
 
             this.setModel = null;
@@ -60,14 +57,14 @@ public class ViewContextMediator {
         }
 
         @Override
-        public void modelAdded(T model) {
+        public void objectAdded(ViewContext viewContext, T object) {
             if (modelAddedRunnable != null) {
                 modelAddedRunnable.run();
             }
         }
 
         @Override
-        public void modelRemoved(T model) {
+        public void objectRemoved(ViewContext viewContext, T object) {
             if (modelRemovedRunnable != null) {
                 modelRemovedRunnable.run();
             }
@@ -92,28 +89,28 @@ public class ViewContextMediator {
 
     private static abstract class AbstractAction<T> implements Action<T> {
 
-        private ViewContext viewContext;
+        private AbstractMutableViewContext abstractViewContext;
         private ObjectQualifier<? super T> objectQualifier;
 
         protected final List<ViewContextListener<T>> listeners = new ArrayList<>();
 
-        public AbstractAction(ViewContext viewContext, ObjectQualifier<? super T> objectQualifier) {
-            this.viewContext = viewContext;
+        public AbstractAction(AbstractMutableViewContext abstractViewContext, ObjectQualifier<? super T> objectQualifier) {
+            this.abstractViewContext = abstractViewContext;
             this.objectQualifier = objectQualifier;
         }
 
 
         @Override
         public void dispose() {
-            listeners.forEach(l -> viewContext.removeViewContextListener(objectQualifier, l));
+            listeners.forEach(l -> abstractViewContext.removeViewContextListener(objectQualifier, l));
             listeners.clear();
         }
     }
 
-    private ViewContext viewContext;
+    private AbstractMutableViewContext abstractViewContext;
 
-    public ViewContextMediator(DefaultViewContext viewContext) {
-        this.viewContext = viewContext;
+    public ViewContextMediator(DefaultAbstractMutableViewContext viewContext) {
+        this.abstractViewContext = viewContext;
     }
 
     public <T> When<T> when(Class<? super T> modelType) {
@@ -129,59 +126,59 @@ public class ViewContextMediator {
         return new AbstractWhen<T>() {
             @Override
             public Action<T> added() {
-                return add(new AbstractAction<T>(viewContext, objectQualifier) {
+                return add(new AbstractAction<T>(abstractViewContext, objectQualifier) {
 
                     @Override
                     public void then(Consumer<T> consumer) {
                         ViewContextMediatorListenerAdapter<T> listenerAdapter = new ViewContextMediatorListenerAdapter<>(consumer, null);
                         listeners.add(listenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, listenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RumnableListenerAdapter<T> rumnableListenerAdapter = new RumnableListenerAdapter<>(requireNonNull(runnable), null);
                         listeners.add(rumnableListenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
                     }
                 });
             }
 
             @Override
             public Action<T> removed() {
-                return add(new AbstractAction<T>(viewContext, objectQualifier) {
+                return add(new AbstractAction<T>(abstractViewContext, objectQualifier) {
 
                     @Override
                     public void then(Consumer<T> consumer) {
                         ViewContextMediatorListenerAdapter<T> listenerAdapter = new ViewContextMediatorListenerAdapter<>(null, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, listenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RumnableListenerAdapter<T> rumnableListenerAdapter = new RumnableListenerAdapter<>(null, requireNonNull(runnable));
                         listeners.add(rumnableListenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
                     }
                 });
             }
 
             @Override
             public Action<T> changed() {
-                return add(new AbstractAction<T>(viewContext, objectQualifier) {
+                return add(new AbstractAction<T>(abstractViewContext, objectQualifier) {
                     @Override
                     public void then(Consumer<T> consumer) {
                         ViewContextMediatorListenerAdapter<T> listenerAdapter = new ViewContextMediatorListenerAdapter<>(consumer, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, listenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RumnableListenerAdapter<T> rumnableListenerAdapter = new RumnableListenerAdapter<>(requireNonNull(runnable), requireNonNull(runnable));
                         listeners.add(rumnableListenerAdapter);
-                        viewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
+                        abstractViewContext.addViewContextListener(objectQualifier, rumnableListenerAdapter);
                     }
                 });
             }

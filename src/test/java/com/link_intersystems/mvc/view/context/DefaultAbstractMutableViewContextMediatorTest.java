@@ -9,7 +9,7 @@ import javax.swing.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DefaultViewContextMediatorTest {
+class DefaultAbstractMutableViewContextMediatorTest {
 
     private static class SomeController {
         private ListModel model;
@@ -25,12 +25,12 @@ class DefaultViewContextMediatorTest {
     }
 
 
-    private DefaultViewContext defaultViewContext;
+    private DefaultAbstractMutableViewContext defaultViewContext;
     private ViewContextMediator viewContextMediator;
 
     @BeforeEach
     void setUp() {
-        defaultViewContext = new DefaultViewContext();
+        defaultViewContext = new DefaultAbstractMutableViewContext();
         viewContextMediator = new ViewContextMediator(defaultViewContext);
     }
 

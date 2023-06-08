@@ -4,8 +4,8 @@ import java.util.EventListener;
 
 public interface ViewContextListener<T> extends EventListener {
 
-    public void modelAdded(T model);
+    public void objectAdded(ViewContext viewContext, T object);
 
-    public void modelRemoved(T model);
+    public void objectRemoved(ViewContext viewContext, T object);
 
 }

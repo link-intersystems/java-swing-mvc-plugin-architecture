@@ -10,14 +10,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DefaultViewContextTest {
+class DefaultAbstractMutableViewContextTest {
 
     private ViewContextListenerMock<ListModel<String>> listenerMock;
-    private DefaultViewContext defaultViewContext;
+    private DefaultAbstractMutableViewContext defaultViewContext;
 
     @BeforeEach
     void setUp() {
-        defaultViewContext = new DefaultViewContext();
+        defaultViewContext = new DefaultAbstractMutableViewContext();
         listenerMock = new ViewContextListenerMock<>();
 
     }

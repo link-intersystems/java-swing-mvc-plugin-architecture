@@ -1,6 +1,6 @@
 package com.link_intersystems.mvc;
 
-import com.link_intersystems.mvc.view.context.ViewContext;
+import com.link_intersystems.mvc.view.context.AbstractMutableViewContext;
 
 import java.awt.*;
 import java.util.Optional;
@@ -17,7 +17,7 @@ public abstract class View {
         this.parentView = Optional.ofNullable(parentView);
     }
 
-    public ViewContext getViewContext() {
+    public AbstractMutableViewContext getViewContext() {
         return parentView.map(v -> v.getViewContext()).orElse(null);
     }
 

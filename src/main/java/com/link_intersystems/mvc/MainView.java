@@ -1,17 +1,17 @@
 package com.link_intersystems.mvc;
 
-import com.link_intersystems.mvc.view.context.ViewContext;
+import com.link_intersystems.mvc.view.context.AbstractMutableViewContext;
 
 public abstract class MainView extends View {
 
-    private ViewContext viewContext;
+    private AbstractMutableViewContext abstractViewContext;
 
-    public MainView(ViewContext viewContext) {
-        this.viewContext = viewContext;
+    public MainView(AbstractMutableViewContext abstractViewContext) {
+        this.abstractViewContext = abstractViewContext;
     }
 
     @Override
-    public ViewContext getViewContext() {
-        return viewContext;
+    public AbstractMutableViewContext getViewContext() {
+        return abstractViewContext;
     }
 }
