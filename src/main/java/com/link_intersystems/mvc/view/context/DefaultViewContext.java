@@ -5,7 +5,7 @@ import com.link_intersystems.mvc.ObjectRegistration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultAbstractMutableViewContext extends AbstractMutableViewContext {
+public class DefaultViewContext extends AbstractMutableViewContext {
 
     private Map<ObjectQualifier<?>, ObjectRegistration<?>> objectsByQualifier = new HashMap<>();
 

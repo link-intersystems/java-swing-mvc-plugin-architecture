@@ -1,5 +1,7 @@
 package com.link_intersystems.mvc.view.context;
 
+import java.util.function.Supplier;
+
 public interface ViewContext {
     default <T> void addViewContextListener(Class<? super T> type, ViewContextListener<T> viewContextListener) {
         addViewContextListener(type, null, viewContextListener);
@@ -33,4 +35,16 @@ public interface ViewContext {
     }
 
     <T> T get(ObjectQualifier<T> objectQualifier);
+
+    default public <T> Supplier<T> getSupplier(Class<T> type) {
+        return getSupplier(type, null);
+    }
+
+    default public <T> Supplier<T> getSupplier(Class<T> type, String name) {
+        return getSupplier(new ObjectQualifier<T>(type, name));
+    }
+
+    default public <T> Supplier<T> getSupplier(ObjectQualifier<T> objectQualifier) {
+        return () -> get(objectQualifier);
+    }
 }

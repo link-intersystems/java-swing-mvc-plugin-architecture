@@ -109,7 +109,7 @@ public class ViewContextMediator {
 
     private AbstractMutableViewContext abstractViewContext;
 
-    public ViewContextMediator(DefaultAbstractMutableViewContext viewContext) {
+    public ViewContextMediator(DefaultViewContext viewContext) {
         this.abstractViewContext = viewContext;
     }
 

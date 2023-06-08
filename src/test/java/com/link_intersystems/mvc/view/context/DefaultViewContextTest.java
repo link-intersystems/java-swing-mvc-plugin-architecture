@@ -10,38 +10,38 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DefaultAbstractMutableViewContextTest {
+class DefaultViewContextTest {
 
     private ViewContextListenerMock<ListModel<String>> listenerMock;
-    private DefaultAbstractMutableViewContext defaultViewContext;
+    private DefaultViewContext defaultViewContext;
 
     @BeforeEach
     void setUp() {
-        defaultViewContext = new DefaultAbstractMutableViewContext();
+        defaultViewContext = new DefaultViewContext();
         listenerMock = new ViewContextListenerMock<>();
 
     }
 
     @Test
-    void registerUnamedModelTwice() {
+    void registerUnnamedObjectTwice() {
         defaultViewContext.put(ListModel.class, new DefaultListModel());
         assertThrows(IllegalArgumentException.class, () -> defaultViewContext.put(ListModel.class, new DefaultListModel()));
     }
 
     @Test
-    void registerNamedModelTwice() {
+    void registerNamedObjectTwice() {
         defaultViewContext.put(ListModel.class, "model1", new DefaultListModel());
         assertThrows(IllegalArgumentException.class, () -> defaultViewContext.put(ListModel.class, "model1", new DefaultListModel()));
     }
 
     @Test
-    void registerModelsWithDifferentQualifiers() {
+    void registerObjectsWithDifferentQualifiers() {
         defaultViewContext.put(ListModel.class, new DefaultListModel());
         defaultViewContext.put(ListModel.class, "model1", new DefaultListModel());
     }
 
     @Test
-    void registerModel() {
+    void putObject() {
         DefaultListModel defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, defaultListModel);
 
@@ -50,7 +50,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void registerNamedModel() {
+    void putNamedObject() {
         defaultViewContext.put(ListModel.class, new DefaultListModel());
         DefaultListModel defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel);
@@ -60,7 +60,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void unregisterModel() {
+    void removeObject() {
         DefaultListModel defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, defaultListModel);
 
@@ -70,7 +70,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void unregisterNamedModel() {
+    void removeNamedObject() {
         DefaultListModel defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel);
 
@@ -81,7 +81,7 @@ class DefaultAbstractMutableViewContextTest {
 
 
     @Test
-    void addListenerAfterModelAdded() {
+    void addListenerAfterObjectPut() {
         DefaultListModel<String> defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, defaultListModel);
 
@@ -92,7 +92,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void addListenerBeforeModelAdded() {
+    void addListenerBeforeObjectPut() {
         DefaultListModel<String> defaultListModel = new DefaultListModel();
         defaultViewContext.addViewContextListener(ListModel.class, listenerMock);
 
@@ -103,7 +103,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void addListenerAfterModelRemoved() {
+    void addListenerAfterObjectRemoved() {
         DefaultListModel<String> defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, defaultListModel);
         defaultViewContext.remove(ListModel.class);
@@ -115,7 +115,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void addListenerBeforeModelRemoved() {
+    void addListenerBeforeObjectRemoved() {
         DefaultListModel<String> defaultListModel = new DefaultListModel();
         defaultViewContext.put(ListModel.class, defaultListModel);
         defaultViewContext.addViewContextListener(ListModel.class, listenerMock);
@@ -127,7 +127,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void removeListenerAfterModelAdded() {
+    void removeListenerAfterPut() {
         DefaultListModel<String> defaultListModel = new DefaultListModel();
         defaultViewContext.addViewContextListener(ListModel.class, listenerMock);
         defaultViewContext.put(ListModel.class, defaultListModel);
@@ -141,7 +141,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void removeListenerBeforeModelAdded() {
+    void removeListenerBeforePut() {
         defaultViewContext.addViewContextListener(ListModel.class, listenerMock);
 
         defaultViewContext.removeViewContextListener(ListModel.class, listenerMock);
@@ -152,7 +152,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void unspecificModelListenerAddedBeforeModels() {
+    void unspecificListenerAddedBeforePut() {
         defaultViewContext.addViewContextListener(ListModel.class, listenerMock);
         DefaultListModel<String> defaultListModel1 = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel1);
@@ -164,7 +164,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void specificModelListenerAddedBeforeModels() {
+    void specificListenerAddedBeforePut() {
         defaultViewContext.addViewContextListener(ListModel.class, "model2", listenerMock);
         DefaultListModel<String> defaultListModel1 = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel1);
@@ -176,7 +176,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void unspecificModelListenerAddedAfterModels() {
+    void unspecificListenerAddedAfterPut() {
         DefaultListModel<String> defaultListModel1 = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel1);
         DefaultListModel<String> defaultListModel2 = new DefaultListModel();
@@ -189,7 +189,7 @@ class DefaultAbstractMutableViewContextTest {
     }
 
     @Test
-    void specificModelListenerAddedAfterModels() {
+    void specificListenerAddedAfterPut() {
         DefaultListModel<String> defaultListModel1 = new DefaultListModel();
         defaultViewContext.put(ListModel.class, "model1", defaultListModel1);
         DefaultListModel<String> defaultListModel2 = new DefaultListModel();
