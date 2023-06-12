@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.link-intersystems.mvc</groupId>
+        <artifactId>java-swing-mvc-plugin-architecture</artifactId>
+        <version>1</version>
+    </parent>
+
+    <artifactId>shared</artifactId>
+
+    <properties>
+        <lis-commons.verions>1.9.4</lis-commons.verions>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-swing</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-swing</artifactId>
+                <version>${lis-commons.verions}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

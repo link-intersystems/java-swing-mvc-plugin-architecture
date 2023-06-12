@@ -4,22 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.link-intersystems.examples.mvc</groupId>
-    <artifactId>java-swing-mvc-example</artifactId>
+    <groupId>com.link-intersystems.mvc</groupId>
+    <artifactId>java-swing-mvc-plugin-architecture</artifactId>
     <version>1</version>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>main-view</module>
+        <module>editor-file</module>
+        <module>editor</module>
+        <module>shared</module>
+        <module>main</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lis-commons.verions>1.9.4</lis-commons.verions>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.link-intersystems.commons</groupId>
-            <artifactId>lis-commons-swing</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -27,13 +33,4 @@
         </dependency>
     </dependencies>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-swing</artifactId>
-                <version>${lis-commons.verions}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>
