@@ -20,7 +20,7 @@ public class SubViewSite implements ViewSite {
     }
 
     @Override
-    public ViewContent getViewLocation() {
+    public ViewContent getViewContent() {
         return viewContent;
     }
 

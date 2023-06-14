@@ -21,7 +21,7 @@ public class MenuView extends AbstractView implements ActionCallback<List<MenuCo
 
         fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
-        ViewContent viewContent = viewSite.getViewLocation();
+        ViewContent viewContent = viewSite.getViewContent();
 
         viewContent.setComponent(menuBar);
 

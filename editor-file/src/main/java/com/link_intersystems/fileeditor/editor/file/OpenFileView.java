@@ -16,7 +16,7 @@ public class OpenFileView extends AbstractView {
 
     @Override
     protected void doInstall(ViewSite viewSite) {
-        ViewContent viewContent = viewSite.getViewLocation();
+        ViewContent viewContent = viewSite.getViewContent();
         Component parentComponent = viewContent.getParent();
         int returnVal = fileChooser.showOpenDialog(parentComponent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

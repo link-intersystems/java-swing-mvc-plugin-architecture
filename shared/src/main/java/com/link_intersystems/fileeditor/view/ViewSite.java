@@ -9,7 +9,7 @@ public interface ViewSite {
 
     public <T> T getService(Class<T> type, String name);
 
-    public ViewContent getViewLocation();
+    public ViewContent getViewContent();
 
     public ViewContext getViewContext();
 

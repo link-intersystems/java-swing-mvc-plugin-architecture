@@ -9,7 +9,7 @@ public abstract class RootViewSite implements ViewSite {
     private DefaultViewContext viewContext = new DefaultViewContext();
 
     @Override
-    public ViewContent getViewLocation() {
+    public ViewContent getViewContent() {
         return rootViewContent;
     }
 

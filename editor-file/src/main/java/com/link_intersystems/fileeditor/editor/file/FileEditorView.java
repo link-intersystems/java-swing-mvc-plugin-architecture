@@ -26,7 +26,7 @@ public class FileEditorView extends AbstractView implements ActionCallback<Docum
         editorPane = new JEditorPane();
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
 
-        ViewContent viewContent = viewSite.getViewLocation();
+        ViewContent viewContent = viewSite.getViewContent();
         viewContent.setComponent(editorScrollPane);
 
         OpenFileAction openFileAction = new OpenFileAction(file);
@@ -38,6 +38,8 @@ public class FileEditorView extends AbstractView implements ActionCallback<Docum
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
+        ViewContent viewLocation = viewSite.getViewContent();
+        viewLocation.setComponent(null);
         editorPane = null;
     }
 
