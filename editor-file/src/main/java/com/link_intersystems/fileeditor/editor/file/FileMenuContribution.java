@@ -1,8 +1,8 @@
 package com.link_intersystems.fileeditor.editor.file;
 
-import com.link_intersystems.fileeditor.context.ViewContext;
-import com.link_intersystems.fileeditor.menu.MenuContribution;
-import com.link_intersystems.fileeditor.view.RootViewSite;
+import com.link_intersystems.swing.context.ViewContext;
+import com.link_intersystems.swing.menu.MenuContribution;
+import com.link_intersystems.swing.view.RootViewSite;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

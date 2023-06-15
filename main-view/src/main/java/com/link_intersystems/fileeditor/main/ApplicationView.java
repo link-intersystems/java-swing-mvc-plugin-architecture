@@ -1,17 +1,16 @@
 package com.link_intersystems.fileeditor.main;
 
-import com.link_intersystems.fileeditor.action.ActionCallback;
-import com.link_intersystems.fileeditor.action.spi.ServiceLoaderAction;
-import com.link_intersystems.fileeditor.context.ViewContext;
 import com.link_intersystems.fileeditor.menu.MenuView;
-import com.link_intersystems.fileeditor.view.AbstractView;
-import com.link_intersystems.fileeditor.view.View;
-import com.link_intersystems.fileeditor.view.ViewSite;
-import com.link_intersystems.fileeditor.view.layout.DefaultViewLayout;
-import com.link_intersystems.fileeditor.view.layout.ViewLayout;
-import com.link_intersystems.fileeditor.view.layout.ViewLayoutContribution;
 import com.link_intersystems.swing.DisplayResolution;
+import com.link_intersystems.swing.action.ActionCallback;
 import com.link_intersystems.swing.action.ActionTrigger;
+import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.View;
+import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.swing.view.layout.DefaultViewLayout;
+import com.link_intersystems.swing.view.layout.ViewLayout;
+import com.link_intersystems.swing.view.layout.ViewLayoutContribution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +20,6 @@ import java.util.List;
 
 public class ApplicationView extends AbstractView {
 
-    private MenuView menuView;
-    private JTabbedPane tabbedPane;
     private ApplicationModel applicationModel;
     private JFrame frame;
 
@@ -44,13 +41,11 @@ public class ApplicationView extends AbstractView {
         });
         frame.setTitle(applicationModel.getTitle());
 
-        ViewContext viewContext = viewSite.getViewContext();
-
         Container contentPane = frame.getContentPane();
         ViewLayout viewLayout = createViewLayout(viewSite, contentPane);
-        viewContext.put(ViewLayout.class, "layout", viewLayout);
+        viewSite.put(ViewLayout.class, "layout", viewLayout);
 
-        menuView = new MenuView();
+        MenuView menuView = new MenuView();
         menuView.install(viewLayout.getViewSite("menuSite"));
 
         ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class);
@@ -88,6 +83,5 @@ public class ApplicationView extends AbstractView {
 
         frame.dispose();
         frame = null;
-        tabbedPane = null;
     }
 }

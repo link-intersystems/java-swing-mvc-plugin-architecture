@@ -1,6 +1,6 @@
 package com.link_intersystems.fileeditor.editor.file;
 
-import com.link_intersystems.fileeditor.action.AbstractTaskAction2;
+import com.link_intersystems.swing.action.AbstractTaskAction2;
 import com.link_intersystems.swing.action.TaskProgress;
 
 import javax.swing.text.BadLocationException;

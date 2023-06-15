@@ -1,15 +1,15 @@
 package com.link_intersystems.fileeditor.init;
 
-import com.link_intersystems.fileeditor.context.ViewContext;
-import com.link_intersystems.fileeditor.view.AbstractView;
-import com.link_intersystems.fileeditor.view.RootViewSite;
-import com.link_intersystems.fileeditor.view.ViewSite;
-import com.link_intersystems.fileeditor.action.ActionCallback;
 import com.link_intersystems.fileeditor.main.ApplicationModel;
 import com.link_intersystems.fileeditor.main.ApplicationView;
 import com.link_intersystems.fileeditor.services.login.LoginResponeModel;
 import com.link_intersystems.fileeditor.services.login.UserModel;
+import com.link_intersystems.swing.action.ActionCallback;
 import com.link_intersystems.swing.action.ActionTrigger;
+import com.link_intersystems.swing.context.ViewContext;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.RootViewSite;
+import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -117,7 +117,7 @@ public class AppInitView extends AbstractView implements ActionCallback<LoginRes
         UserModel userModel = new UserModel();
         userModel.setUsername(result.getUsername());
 
-        ViewContext viewContext = viewSite.getViewContext();
+        ViewContext viewContext = viewSite;
         viewContext.put(userModel);
 
         return userModel;

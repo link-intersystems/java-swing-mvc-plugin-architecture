@@ -1,6 +1,6 @@
 package com.link_intersystems.fileeditor.init;
 
-import com.link_intersystems.fileeditor.action.AbstractTaskAction2;
+import com.link_intersystems.swing.action.AbstractTaskAction2;
 import com.link_intersystems.fileeditor.services.login.LoginResponeModel;
 import com.link_intersystems.swing.action.TaskProgress;
 

@@ -1,11 +1,12 @@
 package com.link_intersystems.fileeditor.menu;
 
-import com.link_intersystems.fileeditor.action.ActionCallback;
-import com.link_intersystems.fileeditor.action.spi.ServiceLoaderAction;
-import com.link_intersystems.fileeditor.context.ViewContext;
-import com.link_intersystems.fileeditor.view.AbstractView;
-import com.link_intersystems.fileeditor.view.ViewContent;
-import com.link_intersystems.fileeditor.view.ViewSite;
+import com.link_intersystems.swing.action.ActionCallback;
+import com.link_intersystems.swing.menu.MenuContribution;
+import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
+import com.link_intersystems.swing.context.ViewContext;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewContent;
+import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.swing.action.ActionTrigger;
 
 import javax.swing.*;
@@ -21,9 +22,8 @@ public class MenuView extends AbstractView implements ActionCallback<List<MenuCo
 
         fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
-        ViewContent viewContent = viewSite.getViewContent();
 
-        viewContent.setComponent(menuBar);
+        viewSite.setComponent(menuBar);
 
         ServiceLoaderAction<MenuContribution> menuContributionAction = new ServiceLoaderAction<>(MenuContribution.class);
         menuContributionAction.setCallback(this);
@@ -40,8 +40,7 @@ public class MenuView extends AbstractView implements ActionCallback<List<MenuCo
 
         if (menuPath.equals("file")) {
             ViewSite viewSite = getViewSite();
-            ViewContext viewContext = viewSite.getViewContext();
-            fileMenu.add(menuContribution.getAction(viewContext));
+            fileMenu.add(menuContribution.getAction(viewSite));
         }
     }
 }

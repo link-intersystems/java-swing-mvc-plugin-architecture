@@ -1,6 +1,6 @@
 package com.link_intersystems.fileeditor.main;
 
-import com.link_intersystems.fileeditor.view.RootViewSite;
+import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.fileeditor.init.AppInitView;
 
 public class FileEditorApp {

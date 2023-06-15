@@ -1,8 +1,10 @@
 package com.link_intersystems.fileeditor.editor;
 
 
-import com.link_intersystems.fileeditor.context.ViewContext;
-import com.link_intersystems.fileeditor.view.*;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.SubViewSite;
+import com.link_intersystems.swing.view.View;
+import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -16,19 +18,16 @@ class EditorManagerView extends AbstractView implements EditorManager {
     @Override
     public void doInstall(ViewSite viewSite) {
         editorsPane = new JTabbedPane();
-        ViewContent viewLocation = viewSite.getViewContent();
-        viewLocation.setComponent(editorsPane);
+        viewSite.setComponent(editorsPane);
 
-        ViewContext viewContext = viewSite.getViewContext();
-        viewContext.put(EditorManager.class, this);
+        viewSite.put(EditorManager.class, this);
     }
 
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
 
-        ViewContext viewContext = viewSite.getViewContext();
-        viewContext.remove(EditorManager.class);
+        viewSite.remove(EditorManager.class);
 
         tabView.uninstall();
         tabView = null;
@@ -49,7 +48,7 @@ class EditorManagerView extends AbstractView implements EditorManager {
             editorView.install(subViewSite);
 
             tabView = new TabView();
-            TabModel tabModel = new TabModel(){
+            TabModel tabModel = new TabModel() {
 
                 @Override
                 public String getTitle() {

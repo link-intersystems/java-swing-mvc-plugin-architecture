@@ -1,7 +1,7 @@
 package com.link_intersystems.fileeditor.editor;
 
 
-import com.link_intersystems.fileeditor.view.View;
+import com.link_intersystems.swing.view.View;
 
 import javax.swing.*;
 

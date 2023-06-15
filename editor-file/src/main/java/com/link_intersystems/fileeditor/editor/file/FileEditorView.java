@@ -1,11 +1,10 @@
 package com.link_intersystems.fileeditor.editor.file;
 
 
-import com.link_intersystems.fileeditor.action.ActionCallback;
-import com.link_intersystems.fileeditor.view.AbstractView;
-import com.link_intersystems.fileeditor.view.ViewContent;
-import com.link_intersystems.fileeditor.view.ViewSite;
+import com.link_intersystems.swing.action.ActionCallback;
 import com.link_intersystems.swing.action.ActionTrigger;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import javax.swing.text.Document;
@@ -14,7 +13,6 @@ import java.io.File;
 public class FileEditorView extends AbstractView implements ActionCallback<Document, Void> {
 
     private JEditorPane editorPane;
-    private Document document;
     private File file;
 
     public FileEditorView(File file) {
@@ -26,8 +24,7 @@ public class FileEditorView extends AbstractView implements ActionCallback<Docum
         editorPane = new JEditorPane();
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
 
-        ViewContent viewContent = viewSite.getViewContent();
-        viewContent.setComponent(editorScrollPane);
+        viewSite.setComponent(editorScrollPane);
 
         OpenFileAction openFileAction = new OpenFileAction(file);
         openFileAction.setCallback(this);
@@ -38,8 +35,7 @@ public class FileEditorView extends AbstractView implements ActionCallback<Docum
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
-        ViewContent viewLocation = viewSite.getViewContent();
-        viewLocation.setComponent(null);
+        viewSite.setComponent(null);
         editorPane = null;
     }
 

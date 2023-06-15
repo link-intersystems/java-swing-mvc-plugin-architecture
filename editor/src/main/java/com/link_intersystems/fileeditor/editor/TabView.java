@@ -1,8 +1,7 @@
 package com.link_intersystems.fileeditor.editor;
 
-import com.link_intersystems.fileeditor.view.AbstractView;
-import com.link_intersystems.fileeditor.view.ViewContent;
-import com.link_intersystems.fileeditor.view.ViewSite;
+import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,8 +52,7 @@ class TabView extends AbstractView {
             gbc.insets = new Insets(0, 5, 0, 0);
             tabComponent.add(closeButton, gbc);
 
-            ViewContent viewLocation = viewSite.getViewContent();
-            viewLocation.setComponent(tabComponent);
+            viewSite.setComponent(tabComponent);
         }
     }
 
@@ -66,7 +64,6 @@ class TabView extends AbstractView {
 
     @Override
     protected void doUninstall(ViewSite viewSite) {
-        ViewContent viewContent = viewSite.getViewContent();
-        viewContent.setComponent(null);
+        viewSite.setComponent(null);
     }
 }
