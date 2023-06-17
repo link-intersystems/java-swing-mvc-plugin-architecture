@@ -1,7 +1,7 @@
 package com.link_intersystems.swing.action.spi;
 
-import com.link_intersystems.swing.action.AbstractTaskAction2;
-import com.link_intersystems.swing.action.TaskProgress;
+import com.link_intersystems.swing.action.concurrent.DefaultTaskAction;
+import com.link_intersystems.util.concurrent.task.TaskProgress;
 
 import java.util.List;
 import java.util.ServiceLoader;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.*;
 
-public class ServiceLoaderAction<T> extends AbstractTaskAction2<List<T>, Void> {
+public class ServiceLoaderAction<T> extends DefaultTaskAction<List<T>, Void> {
 
     private Class<T> serviceType;
 
@@ -18,7 +18,7 @@ public class ServiceLoaderAction<T> extends AbstractTaskAction2<List<T>, Void> {
     }
 
     @Override
-    protected List<T> doInBackground(TaskProgress<Void> taskProgress) throws Exception {
+    protected List<T> doInBackground(TaskProgress<Void> taskProgress) {
         return ServiceLoader.load(serviceType).stream().map(ServiceLoader.Provider::get).collect(Collectors.toList());
     }
 

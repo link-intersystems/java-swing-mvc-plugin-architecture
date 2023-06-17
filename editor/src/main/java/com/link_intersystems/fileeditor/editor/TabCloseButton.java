@@ -7,7 +7,7 @@ import java.awt.*;
 
 class TabCloseButton extends JButton {
 
-    public static final String CROSS_MARK = "\u2715";
+    public static final String CROSS_MARK = "✕";
 
     public TabCloseButton() {
         super(CROSS_MARK);

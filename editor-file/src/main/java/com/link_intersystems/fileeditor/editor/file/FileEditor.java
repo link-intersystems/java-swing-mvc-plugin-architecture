@@ -37,4 +37,4 @@ class FileEditor implements Editor {
     public View getView() {
         return fileEditorView;
     }
-};
+}

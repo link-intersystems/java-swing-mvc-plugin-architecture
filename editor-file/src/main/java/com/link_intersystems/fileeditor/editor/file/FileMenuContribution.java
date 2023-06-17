@@ -1,8 +1,8 @@
 package com.link_intersystems.fileeditor.editor.file;
 
-import com.link_intersystems.swing.context.ViewContext;
+import com.link_intersystems.util.context.Context;
 import com.link_intersystems.swing.menu.MenuContribution;
-import com.link_intersystems.swing.view.RootViewSite;
+import com.link_intersystems.swing.view.RootSite;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,21 +14,16 @@ public class FileMenuContribution implements MenuContribution {
     }
 
     @Override
-    public Action getAction(ViewContext viewContext) {
+    public Action getAction(Context context) {
         AbstractAction abstractAction = new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 OpenFileView openFileView = new OpenFileView();
-                openFileView.install(new RootViewSite() {
+                openFileView.install(new RootSite() {
                     @Override
-                    public <T> T getService(Class<T> type, String name) {
-                        return null;
-                    }
-
-                    @Override
-                    public ViewContext getViewContext() {
-                        return viewContext;
+                    public Context getViewContext() {
+                        return context;
                     }
                 });
             }

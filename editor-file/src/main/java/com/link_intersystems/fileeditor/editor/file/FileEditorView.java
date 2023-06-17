@@ -1,16 +1,16 @@
 package com.link_intersystems.fileeditor.editor.file;
 
 
-import com.link_intersystems.swing.action.ActionCallback;
 import com.link_intersystems.swing.action.ActionTrigger;
+import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.view.AbstractView;
-import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.swing.view.Site;
 
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.io.File;
 
-public class FileEditorView extends AbstractView implements ActionCallback<Document, Void> {
+public class FileEditorView extends AbstractView implements TaskActionListener<Document, Void> {
 
     private JEditorPane editorPane;
     private File file;
@@ -20,20 +20,20 @@ public class FileEditorView extends AbstractView implements ActionCallback<Docum
     }
 
     @Override
-    public void doInstall(ViewSite viewSite) {
+    public void doInstall(Site viewSite) {
         editorPane = new JEditorPane();
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
 
         viewSite.setComponent(editorScrollPane);
 
         OpenFileAction openFileAction = new OpenFileAction(file);
-        openFileAction.setCallback(this);
+        openFileAction.setTaskActionListener(this);
 
         ActionTrigger.performAction(this, openFileAction);
     }
 
     @Override
-    protected void doUninstall(ViewSite viewSite) {
+    protected void doUninstall(Site viewSite) {
         super.doUninstall(viewSite);
         viewSite.setComponent(null);
         editorPane = null;

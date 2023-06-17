@@ -2,12 +2,12 @@ package com.link_intersystems.fileeditor.main;
 
 import com.link_intersystems.fileeditor.menu.MenuView;
 import com.link_intersystems.swing.DisplayResolution;
-import com.link_intersystems.swing.action.ActionCallback;
 import com.link_intersystems.swing.action.ActionTrigger;
+import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
 import com.link_intersystems.swing.view.AbstractView;
 import com.link_intersystems.swing.view.View;
-import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.swing.view.Site;
 import com.link_intersystems.swing.view.layout.DefaultViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayoutContribution;
@@ -28,7 +28,7 @@ public class ApplicationView extends AbstractView {
     }
 
     @Override
-    public void doInstall(ViewSite viewSite) {
+    public void doInstall(Site viewSite) {
         frame = new JFrame();
         frame.setSize(DisplayResolution.VGA.getDimension());
         frame.setLocationRelativeTo(null);
@@ -48,8 +48,10 @@ public class ApplicationView extends AbstractView {
         MenuView menuView = new MenuView();
         menuView.install(viewLayout.getViewSite("menuSite"));
 
+        viewSite.setComponent(frame);
+
         ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class);
-        viewContributionAction.setCallback(new ActionCallback<List<ViewLayoutContribution>, Void>() {
+        viewContributionAction.setTaskActionListener(new TaskActionListener<>() {
             @Override
             public void done(List<ViewLayoutContribution> result) {
                 result.forEach(this::addViewLayoutContribution);
@@ -57,18 +59,15 @@ public class ApplicationView extends AbstractView {
 
             private void addViewLayoutContribution(ViewLayoutContribution viewLayoutContribution) {
                 String viewSiteName = viewLayoutContribution.getViewSiteName();
-                ViewSite viewSite = viewLayout.getViewSite(viewSiteName);
+                Site viewSite = viewLayout.getViewSite(viewSiteName);
                 View view = viewLayoutContribution.getView();
                 view.install(viewSite);
             }
         });
-
-        frame.setVisible(true);
-
         ActionTrigger.performAction(this, viewContributionAction);
     }
 
-    protected ViewLayout createViewLayout(ViewSite viewSite, Container contentPane) {
+    protected ViewLayout createViewLayout(Site viewSite, Container contentPane) {
         DefaultViewLayout viewLayout = new DefaultViewLayout(viewSite, contentPane);
 
         viewLayout.addViewSite("menuSite", BorderLayout.NORTH);
@@ -78,7 +77,7 @@ public class ApplicationView extends AbstractView {
     }
 
     @Override
-    protected void doUninstall(ViewSite viewSite) {
+    protected void doUninstall(Site viewSite) {
         super.doUninstall(viewSite);
 
         frame.dispose();

@@ -1,8 +1,8 @@
 package com.link_intersystems.swing.view.layout;
 
-import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.swing.view.Site;
 
 public interface ViewLayout {
 
-    public ViewSite getViewSite(String identifier);
+    public Site getViewSite(String identifier);
 }

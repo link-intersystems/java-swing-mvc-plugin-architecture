@@ -4,19 +4,19 @@ import static java.util.Objects.*;
 
 public abstract class AbstractView implements View {
 
-    private ViewSite viewSite;
+    private Site viewSite;
 
     @Override
-    public void install(ViewSite viewSite) {
+    public void install(Site viewSite) {
         this.viewSite = requireNonNull(viewSite);
         doInstall(viewSite);
     }
 
-    protected ViewSite getViewSite() {
+    protected Site getViewSite() {
         return viewSite;
     }
 
-    protected abstract void doInstall(ViewSite viewSite);
+    protected abstract void doInstall(Site viewSite);
 
     @Override
     public void uninstall() {
@@ -29,10 +29,11 @@ public abstract class AbstractView implements View {
         viewSite = null;
     }
 
-    protected void doUninstall(ViewSite viewSite) {
+    protected void doUninstall(Site viewSite) {
+        viewSite.setComponent(null);
     }
 
-    protected SubViewSite createSubViewSite(ViewContent viewContent){
-        return new SubViewSite(viewSite, viewContent);
+    protected SubSite createSubViewSite(ViewContent viewContent){
+        return new SubSite(viewSite, viewContent);
     }
 }

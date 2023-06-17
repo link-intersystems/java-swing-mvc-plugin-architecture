@@ -1,11 +1,11 @@
 package com.link_intersystems.swing.menu;
 
-import com.link_intersystems.swing.context.ViewContext;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 
 public interface MenuContribution {
     String getMenuPath();
 
-    Action getAction(ViewContext viewContext);
+    Action getAction(Context context);
 }

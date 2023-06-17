@@ -1,21 +1,21 @@
 package com.link_intersystems.fileeditor.main;
 
-import com.link_intersystems.swing.view.RootViewSite;
-import com.link_intersystems.fileeditor.init.AppInitView;
+import com.link_intersystems.fileeditor.login.LoginView;
+import com.link_intersystems.fileeditor.services.login.LoginService;
+import com.link_intersystems.swing.view.RootSite;
+import com.link_intersystems.util.context.Context;
 
 public class FileEditorApp {
 
     public static void main(String[] args) {
 
-        AppInitView appInitView = new AppInitView();
+        LoginView loginView = new LoginView();
 
-        RootViewSite rootViewSite = new RootViewSite() {
-            @Override
-            public <T> T getService(Class<T> type, String name) {
-                return null;
-            }
-        };
+        RootSite rootViewSite = new RootSite();
 
-        appInitView.install(rootViewSite);
+        Context viewContext = rootViewSite.getViewContext();
+        viewContext.put(new LoginService());
+
+        loginView.install(rootViewSite);
     }
 }

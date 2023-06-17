@@ -12,7 +12,7 @@
     <artifactId>shared</artifactId>
 
     <properties>
-        <lis-commons.verions>1.9.4</lis-commons.verions>
+        <lis-commons.verions>1.9.6</lis-commons.verions>
     </properties>
 
     <dependencies>

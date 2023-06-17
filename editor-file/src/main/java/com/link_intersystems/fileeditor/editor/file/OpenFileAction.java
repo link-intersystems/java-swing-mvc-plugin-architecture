@@ -1,7 +1,7 @@
 package com.link_intersystems.fileeditor.editor.file;
 
-import com.link_intersystems.swing.action.AbstractTaskAction2;
-import com.link_intersystems.swing.action.TaskProgress;
+import com.link_intersystems.swing.action.concurrent.DefaultTaskAction;
+import com.link_intersystems.util.concurrent.task.TaskProgress;
 
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
@@ -13,7 +13,7 @@ import java.nio.CharBuffer;
 
 import static java.util.Objects.*;
 
-public class OpenFileAction extends AbstractTaskAction2<Document, Void> {
+public class OpenFileAction extends DefaultTaskAction<Document, Void> {
 
     private File file;
 
