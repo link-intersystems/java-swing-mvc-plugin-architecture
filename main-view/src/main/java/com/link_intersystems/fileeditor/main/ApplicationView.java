@@ -39,8 +39,6 @@ public class ApplicationView extends WindowView {
         MenuView menuView = new MenuView();
         menuView.install(viewLayout.getViewSite("menuSite"));
 
-        viewSite.setComponent(frame);
-
         ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class);
         viewContributionAction.setTaskActionListener(new TaskActionListener<>() {
             @Override

@@ -1,14 +1,13 @@
 package com.link_intersystems.fileeditor.login;
 
 import com.link_intersystems.fileeditor.services.login.LoginService;
+import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.swing.view.window.WindowView;
 
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class LoginView extends WindowView {
 
@@ -128,5 +127,9 @@ public class LoginView extends WindowView {
 
     JProgressBar getProgressBar() {
         return progressBar;
+    }
+
+    protected ViewSite createApplicationViewSite() {
+        return new RootViewSite(getViewSite());
     }
 }

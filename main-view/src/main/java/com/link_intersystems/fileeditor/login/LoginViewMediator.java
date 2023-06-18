@@ -52,11 +52,7 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
                 UserModel userModel = putUserModel(result);
                 ApplicationModel applicationModel = createApplicationModel(userModel);
 
-                ApplicationView applicationView = new ApplicationView();
-                applicationView.setApplicationModel(applicationModel);
-
-                RootViewSite rootViewSite = new RootViewSite(getViewSite());
-                applicationView.install(rootViewSite);
+                installApplicationView(applicationModel);
             } finally {
                 loginView.uninstall();
             }
@@ -68,6 +64,14 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
 
             schedule(this::resetProgress);
         }
+    }
+
+    protected void installApplicationView(ApplicationModel applicationModel) {
+        ApplicationView applicationView = new ApplicationView();
+        applicationView.setApplicationModel(applicationModel);
+
+        ViewSite viewSite = loginView.createApplicationViewSite();
+        applicationView.install(viewSite);
     }
 
     private ViewSite getViewSite() {
