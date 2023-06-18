@@ -1,7 +1,6 @@
 package com.link_intersystems.util.context;
 
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,31 +9,31 @@ import static java.util.Objects.*;
 
 public abstract class AbstractContext implements Context {
 
-    protected abstract QualifiedInstance<?> removeInstance(Qualifier<?> qualifier);
+    protected abstract QualifiedObject<?> removeInstance(ObjectQualifier<?> objectQualifier);
 
-    protected abstract <T> QualifiedInstance<T> getInstance(Qualifier<? super T> qualifier);
+    protected abstract <T> QualifiedObject<T> getInstance(ObjectQualifier<? super T> objectQualifier);
 
     @SuppressWarnings("CanBeFinal")
     private static class ViewContextListenerRegistration<T> {
 
-        private Qualifier<? super T> qualifier;
+        private ObjectQualifier<? super T> objectQualifier;
         private ContextListener<T> contextListener;
 
-        public ViewContextListenerRegistration(Qualifier<? super T> qualifier, ContextListener<T> contextListener) {
-            this.qualifier = requireNonNull(qualifier);
+        public ViewContextListenerRegistration(ObjectQualifier<? super T> objectQualifier, ContextListener<T> contextListener) {
+            this.objectQualifier = requireNonNull(objectQualifier);
             this.contextListener = requireNonNull(contextListener);
         }
 
         @SuppressWarnings("unchecked")
-        public <T> ContextListener<T> cast(Qualifier<? super T> qualifier) {
-            if (accept(qualifier)) {
+        public <T> ContextListener<T> cast(ObjectQualifier<? super T> objectQualifier) {
+            if (accept(objectQualifier)) {
                 return (ContextListener<T>) contextListener;
             }
             return null;
         }
 
-        public <T> boolean accept(Qualifier<? super T> qualifier) {
-            return this.qualifier.equals(qualifier);
+        public <T> boolean accept(ObjectQualifier<? super T> objectQualifier) {
+            return this.objectQualifier.equals(objectQualifier);
         }
 
         @Override
@@ -42,37 +41,37 @@ public abstract class AbstractContext implements Context {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             ViewContextListenerRegistration<?> that = (ViewContextListenerRegistration<?>) o;
-            return Objects.equals(qualifier, that.qualifier) && Objects.equals(contextListener, that.contextListener);
+            return Objects.equals(objectQualifier, that.objectQualifier) && Objects.equals(contextListener, that.contextListener);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(qualifier, contextListener);
+            return Objects.hash(objectQualifier, contextListener);
         }
     }
 
     private List<ViewContextListenerRegistration<?>> viewContextListenerRegistrations = new ArrayList<>();
 
     @Override
-    public <T> void addViewContextListener(Qualifier<? super T> qualifier, ContextListener<T> contextListener) {
-        ViewContextListenerRegistration<T> listenerRegistration = new ViewContextListenerRegistration<>(qualifier, contextListener);
+    public <T> void addViewContextListener(ObjectQualifier<? super T> objectQualifier, ContextListener<T> contextListener) {
+        ViewContextListenerRegistration<T> listenerRegistration = new ViewContextListenerRegistration<>(objectQualifier, contextListener);
         viewContextListenerRegistrations.add(listenerRegistration);
 
-        onViewContextListenerAdded(qualifier, contextListener);
+        onViewContextListenerAdded(objectQualifier, contextListener);
     }
 
-    protected <T> void onViewContextListenerAdded(Qualifier<? super T> qualifier, ContextListener<T> contextListener) {
-        QualifiedInstance<T> registration = getInstance(qualifier);
+    protected <T> void onViewContextListenerAdded(ObjectQualifier<? super T> objectQualifier, ContextListener<T> contextListener) {
+        QualifiedObject<T> registration = getInstance(objectQualifier);
         if (registration != null) {
-            T object = registration.getInstance();
+            T object = registration.getObject();
             contextListener.added(this, object);
         }
     }
 
 
     @Override
-    public <T> void removeViewContextListener(Qualifier<? super T> qualifier, ContextListener<T> contextListener) {
-        ViewContextListenerRegistration<T> listenerRegistration = new ViewContextListenerRegistration<>(qualifier, contextListener);
+    public <T> void removeViewContextListener(ObjectQualifier<? super T> objectQualifier, ContextListener<T> contextListener) {
+        ViewContextListenerRegistration<T> listenerRegistration = new ViewContextListenerRegistration<>(objectQualifier, contextListener);
         if (viewContextListenerRegistrations.remove(listenerRegistration)) {
             onViewContextListenerRemoved(listenerRegistration.contextListener);
         }
@@ -82,27 +81,26 @@ public abstract class AbstractContext implements Context {
     }
 
     @Override
-    public <T, O extends T> void put(Qualifier<? super T> qualifier, O object) {
-        QualifiedInstance<O> qualifiedInstance = new QualifiedInstance<>(qualifier, object);
+    public <T, O extends T> void put(ObjectQualifier<? super T> objectQualifier, O object) {
+        QualifiedObject<O> qualifiedObject = new QualifiedObject<>(objectQualifier, object);
 
-        if (putInstance(qualifiedInstance)) {
-            onInstancePut(qualifiedInstance);
+        if (putInstance(qualifiedObject)) {
+            onPutInstance(qualifiedObject);
             return;
         }
 
-        String msg = MessageFormat.format("Object ''{0}'' is already set.", qualifier);
-        throw new IllegalArgumentException(msg);
+        throw new DuplicateObjectException(objectQualifier);
     }
 
-    protected abstract boolean putInstance(QualifiedInstance<?> qualifiedInstance);
+    protected abstract boolean putInstance(QualifiedObject<?> qualifiedObject);
 
 
-    protected <T> void onInstancePut(QualifiedInstance<T> qualifiedInstance) {
+    protected <T> void onPutInstance(QualifiedObject<T> qualifiedObject) {
         for (ViewContextListenerRegistration<?> listenerRegistration : viewContextListenerRegistrations) {
-            Qualifier<? super T> qualifier = qualifiedInstance.getQualifier();
-            ContextListener<T> contextListener = listenerRegistration.cast(qualifier);
+            ObjectQualifier<? super T> objectQualifier = qualifiedObject.getQualifier();
+            ContextListener<T> contextListener = listenerRegistration.cast(objectQualifier);
             if (contextListener != null) {
-                T object = qualifiedInstance.getInstance();
+                T object = qualifiedObject.getObject();
                 contextListener.added(this, object);
             }
         }
@@ -110,37 +108,37 @@ public abstract class AbstractContext implements Context {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T get(Qualifier<T> qualifier) {
-        if (qualifier == null) {
+    public <T> T get(ObjectQualifier<T> objectQualifier) {
+        if (objectQualifier == null) {
             return null;
         }
 
-        QualifiedInstance<?> qualifiedInstance = getInstance(qualifier);
+        QualifiedObject<?> qualifiedObject = getInstance(objectQualifier);
 
-        if (qualifiedInstance == null) {
-            return null;
+        if (qualifiedObject == null) {
+            throw new NoSuchObjectException(objectQualifier);
         }
 
-        return (T) qualifiedInstance.getInstance();
+        return (T) qualifiedObject.getObject();
     }
 
     @Override
-    public boolean remove(Qualifier<?> qualifier) {
-        QualifiedInstance<?> removedInstance = removeInstance(qualifier);
+    public boolean remove(ObjectQualifier<?> objectQualifier) {
+        QualifiedObject<?> removedInstance = removeInstance(objectQualifier);
 
         if (removedInstance != null) {
-            onInstanceRemoved(removedInstance);
+            onRemoveInstance(removedInstance);
         }
 
         return removedInstance != null;
     }
 
-    protected <T> void onInstanceRemoved(QualifiedInstance<T> removedRegistration) {
+    protected <T> void onRemoveInstance(QualifiedObject<T> removedRegistration) {
         for (ViewContextListenerRegistration<?> listenerRegistration : viewContextListenerRegistrations) {
-            Qualifier<? super T> qualifier = removedRegistration.getQualifier();
-            ContextListener<T> contextListener = listenerRegistration.cast(qualifier);
+            ObjectQualifier<? super T> objectQualifier = removedRegistration.getQualifier();
+            ContextListener<T> contextListener = listenerRegistration.cast(objectQualifier);
             if (contextListener != null) {
-                T removedObject = removedRegistration.getInstance();
+                T removedObject = removedRegistration.getObject();
                 contextListener.removed(this, removedObject);
             }
         }

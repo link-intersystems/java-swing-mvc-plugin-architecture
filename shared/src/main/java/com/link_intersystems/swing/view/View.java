@@ -1,7 +1,7 @@
 package com.link_intersystems.swing.view;
 
 public interface View {
-    void install(Site viewSite);
+    void install(ViewSite viewSite);
 
     void uninstall();
 

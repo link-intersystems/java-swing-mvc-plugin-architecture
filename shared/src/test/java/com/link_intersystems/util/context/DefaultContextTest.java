@@ -182,4 +182,30 @@ class DefaultContextTest {
 
         assertEquals(List.of("B"), contextListener.getObjects());
     }
+
+    @Test
+    void contains() {
+        context.put(String.class,  "A");
+        context.put(String.class, "model1", "B");
+        context.put(String.class, "model2", "C");
+
+
+        assertTrue(context.contains(String.class));
+        assertTrue(context.contains(String.class, "model1"));
+        assertTrue(context.contains(String.class, "model2"));
+    }
+
+    @Test
+    void stream() {
+        context.put(String.class, "model1", "A");
+        context.put(String.class, "model2", "B");
+
+
+        List<?> instances = context.stream().map(QualifiedObject::getObject).toList();
+        assertEquals(2, instances.size());
+        assertTrue(instances.contains("A"));
+        assertTrue(instances.contains("B"));
+
+        context.stream().map(QualifiedObject::getQualifier).toList().forEach(context::remove);
+    }
 }

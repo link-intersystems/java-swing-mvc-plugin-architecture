@@ -7,10 +7,11 @@ import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
 import com.link_intersystems.swing.view.AbstractView;
 import com.link_intersystems.swing.view.View;
-import com.link_intersystems.swing.view.Site;
+import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.swing.view.layout.DefaultViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayoutContribution;
+import com.link_intersystems.util.context.CloseContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +29,7 @@ public class ApplicationView extends AbstractView {
     }
 
     @Override
-    public void doInstall(Site viewSite) {
+    public void doInstall(ViewSite viewSite) {
         frame = new JFrame();
         frame.setSize(DisplayResolution.VGA.getDimension());
         frame.setLocationRelativeTo(null);
@@ -36,6 +37,7 @@ public class ApplicationView extends AbstractView {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                viewSite.get(CloseContext.class).close();
                 uninstall();
             }
         });
@@ -59,7 +61,7 @@ public class ApplicationView extends AbstractView {
 
             private void addViewLayoutContribution(ViewLayoutContribution viewLayoutContribution) {
                 String viewSiteName = viewLayoutContribution.getViewSiteName();
-                Site viewSite = viewLayout.getViewSite(viewSiteName);
+                ViewSite viewSite = viewLayout.getViewSite(viewSiteName);
                 View view = viewLayoutContribution.getView();
                 view.install(viewSite);
             }
@@ -67,7 +69,7 @@ public class ApplicationView extends AbstractView {
         ActionTrigger.performAction(this, viewContributionAction);
     }
 
-    protected ViewLayout createViewLayout(Site viewSite, Container contentPane) {
+    protected ViewLayout createViewLayout(ViewSite viewSite, Container contentPane) {
         DefaultViewLayout viewLayout = new DefaultViewLayout(viewSite, contentPane);
 
         viewLayout.addViewSite("menuSite", BorderLayout.NORTH);
@@ -77,7 +79,7 @@ public class ApplicationView extends AbstractView {
     }
 
     @Override
-    protected void doUninstall(Site viewSite) {
+    protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
 
         frame.dispose();

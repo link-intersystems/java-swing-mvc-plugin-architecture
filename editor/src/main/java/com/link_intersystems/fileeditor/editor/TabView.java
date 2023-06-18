@@ -1,7 +1,7 @@
 package com.link_intersystems.fileeditor.editor;
 
 import com.link_intersystems.swing.view.AbstractView;
-import com.link_intersystems.swing.view.Site;
+import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ class TabView extends AbstractView {
     }
 
     @Override
-    protected void doInstall(Site viewSite) {
+    protected void doInstall(ViewSite viewSite) {
         ActionListener closeActionListener = tabModel.getCloseActionListener();
 
         if (closeActionListener != null) {

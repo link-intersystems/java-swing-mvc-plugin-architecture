@@ -2,7 +2,7 @@ package com.link_intersystems.util.context.dsl;
 
 import com.link_intersystems.util.context.Context;
 import com.link_intersystems.util.context.ContextListener;
-import com.link_intersystems.util.context.Qualifier;
+import com.link_intersystems.util.context.ObjectQualifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,19 +92,19 @@ public class ContextDsl {
     private static abstract class AbstractAction<T> implements Action<T> {
 
         private Context context;
-        private Qualifier<? super T> qualifier;
+        private ObjectQualifier<? super T> objectQualifier;
 
         protected final List<ContextListener<T>> listeners = new ArrayList<>();
 
-        public AbstractAction(Context context, Qualifier<? super T> qualifier) {
+        public AbstractAction(Context context, ObjectQualifier<? super T> objectQualifier) {
             this.context = context;
-            this.qualifier = qualifier;
+            this.objectQualifier = objectQualifier;
         }
 
 
         @Override
         public void dispose() {
-            listeners.forEach(l -> context.removeViewContextListener(qualifier, l));
+            listeners.forEach(l -> context.removeViewContextListener(objectQualifier, l));
             listeners.clear();
         }
     }
@@ -120,67 +120,67 @@ public class ContextDsl {
     }
 
     public <T> When<T> when(Class<? super T> modelType, String name) {
-        Qualifier<? super T> qualifier = new Qualifier<>(modelType, name);
-        return when(qualifier);
+        ObjectQualifier<? super T> objectQualifier = new ObjectQualifier<>(modelType, name);
+        return when(objectQualifier);
     }
 
-    public <T> When<T> when(Qualifier<? super T> qualifier) {
+    public <T> When<T> when(ObjectQualifier<? super T> objectQualifier) {
         return new AbstractWhen<>() {
             @Override
             public Action<T> added() {
-                return add(new AbstractAction<T>(context, qualifier) {
+                return add(new AbstractAction<T>(context, objectQualifier) {
 
                     @Override
                     public void then(Consumer<T> consumer) {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(consumer, null);
                         listeners.add(listenerAdapter);
-                        context.addViewContextListener(qualifier, listenerAdapter);
+                        context.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(requireNonNull(runnable), null);
                         listeners.add(runnableListenerAdapter);
-                        context.addViewContextListener(qualifier, runnableListenerAdapter);
+                        context.addViewContextListener(objectQualifier, runnableListenerAdapter);
                     }
                 });
             }
 
             @Override
             public Action<T> removed() {
-                return add(new AbstractAction<T>(context, qualifier) {
+                return add(new AbstractAction<T>(context, objectQualifier) {
 
                     @Override
                     public void then(Consumer<T> consumer) {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(null, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
-                        context.addViewContextListener(qualifier, listenerAdapter);
+                        context.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(null, requireNonNull(runnable));
                         listeners.add(runnableListenerAdapter);
-                        context.addViewContextListener(qualifier, runnableListenerAdapter);
+                        context.addViewContextListener(objectQualifier, runnableListenerAdapter);
                     }
                 });
             }
 
             @Override
             public Action<T> changed() {
-                return add(new AbstractAction<T>(context, qualifier) {
+                return add(new AbstractAction<T>(context, objectQualifier) {
                     @Override
                     public void then(Consumer<T> consumer) {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(consumer, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
-                        context.addViewContextListener(qualifier, listenerAdapter);
+                        context.addViewContextListener(objectQualifier, listenerAdapter);
                     }
 
                     @Override
                     public void then(Runnable runnable) {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(requireNonNull(runnable), requireNonNull(runnable));
                         listeners.add(runnableListenerAdapter);
-                        context.addViewContextListener(qualifier, runnableListenerAdapter);
+                        context.addViewContextListener(objectQualifier, runnableListenerAdapter);
                     }
                 });
             }

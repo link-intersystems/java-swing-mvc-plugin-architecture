@@ -5,8 +5,6 @@ import com.link_intersystems.util.context.DefaultContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContextDslTest {

@@ -6,13 +6,17 @@ import com.link_intersystems.fileeditor.services.login.LoginResponseModel;
 import com.link_intersystems.fileeditor.services.login.LoginService;
 import com.link_intersystems.fileeditor.services.login.UserModel;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;
-import com.link_intersystems.util.context.Context;
 import com.link_intersystems.swing.view.AbstractView;
-import com.link_intersystems.swing.view.Site;
+import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.util.context.CloseContext;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,17 +28,18 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
     private JPasswordField passwordField;
     private JTextField usernameField;
     private JButton loginButton;
+    private Optional<TimerTask> resetProgressTask = Optional.empty();
 
 
     @Override
-    public void doInstall(Site viewSite) {
+    public void doInstall(ViewSite viewSite) {
         loginAction = createLoginAction(viewSite);
 
         dialog = createComponent();
         viewSite.setComponent(dialog);
     }
 
-    private LoginAction createLoginAction(Site viewSite) {
+    private LoginAction createLoginAction(ViewSite viewSite) {
         LoginService loginService = viewSite.get(LoginService.class);
         return createLoginAction(loginService);
     }
@@ -62,13 +67,20 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
     }
 
     private JDialog createComponent() {
-
         LoginModel loginModel = getLoginModel();
-
 
         JDialog dialog = new JDialog();
         dialog.setSize(new Dimension(500, 180));
         dialog.setLocationRelativeTo(null);
+        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                ViewSite viewSite = getViewSite();
+                viewSite.get(CloseContext.class).close();
+                uninstall();
+            }
+        });
 
         Container contentPane = dialog.getContentPane();
 
@@ -133,6 +145,19 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
     }
 
     @Override
+    public void aboutToRun() {
+        resetProgressTask.ifPresent(TimerTask::cancel);
+        resetProgress();
+    }
+
+    private void resetProgress() {
+        progressBar.setString("");
+        Color foreground = new JProgressBar().getForeground();
+        progressBar.setForeground(foreground);
+        progressBar.setStringPainted(false);
+    }
+
+    @Override
     public void done(LoginResponseModel result) {
         if (result.isLoginSuccessful()) {
             try {
@@ -148,20 +173,19 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
             }
         } else {
             progressBar.setString("Login failed!");
-            Color foreground = progressBar.getForeground();
             progressBar.setForeground(new Color(255, 50, 50));
             progressBar.setStringPainted(true);
 
-            TimerTask resetProgress = new TimerTask() {
+            TimerTask resetProgressTask = new TimerTask() {
                 @Override
                 public void run() {
-                    progressBar.setString("");
-                    progressBar.setForeground(foreground);
-                    progressBar.setStringPainted(false);
-                    aboutToRun();
+                    resetProgress();
+                    LoginView.this.resetProgressTask = Optional.empty();
                 }
             };
-            schedule(resetProgress);
+            this.resetProgressTask = Optional.of(resetProgressTask);
+
+            schedule(resetProgressTask);
         }
     }
 
@@ -194,7 +218,7 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
         userModel.setUsername(result.getUsername());
 
         Context viewSite = getViewSite();
-        viewSite.put(userModel);
+        viewSite.put(UserModel.class, userModel);
 
         return userModel;
     }

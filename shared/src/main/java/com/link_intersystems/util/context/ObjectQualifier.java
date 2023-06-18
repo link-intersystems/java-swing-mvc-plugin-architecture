@@ -4,16 +4,16 @@ import java.util.Objects;
 
 import static java.util.Objects.*;
 
-public class Qualifier<T> {
+public class ObjectQualifier<T> {
 
     private Class<T> type;
     private String name;
 
-    public Qualifier(Class<T> type) {
+    public ObjectQualifier(Class<T> type) {
         this(type, null);
     }
 
-    public Qualifier(Class<T> type, String name) {
+    public ObjectQualifier(Class<T> type, String name) {
         this.type = requireNonNull(type);
         this.name = name;
     }
@@ -30,7 +30,7 @@ public class Qualifier<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Qualifier<?> that = (Qualifier<?>) o;
+        ObjectQualifier<?> that = (ObjectQualifier<?>) o;
         return Objects.equals(getType(), that.getType()) && Objects.equals(getName(), that.getName());
     }
 
@@ -41,6 +41,17 @@ public class Qualifier<T> {
 
     @Override
     public String toString() {
-        return getType().getName() + "(" + getName() + ')';
+        StringBuilder sb = new StringBuilder();
+        sb.append(getType().getName());
+
+        String name = getName();
+        if (name != null) {
+            sb.append("['");
+            sb.append(getName());
+            sb.append("']");
+        }
+
+        return sb.toString();
     }
 }
+
