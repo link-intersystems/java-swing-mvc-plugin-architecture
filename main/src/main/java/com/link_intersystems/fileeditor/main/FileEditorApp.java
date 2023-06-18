@@ -3,10 +3,13 @@ package com.link_intersystems.fileeditor.main;
 import com.link_intersystems.fileeditor.login.LoginView;
 import com.link_intersystems.fileeditor.services.login.LoginService;
 import com.link_intersystems.swing.view.RootViewSite;
-import com.link_intersystems.util.context.CloseContext;
+import com.link_intersystems.swing.view.window.WindowView;
 import com.link_intersystems.util.context.DefaultContext;
 
-import java.util.Timer;
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class FileEditorApp {
 
@@ -17,11 +20,21 @@ public class FileEditorApp {
         RootViewSite rootViewSite = new RootViewSite(viewContext);
 
         viewContext.put(LoginService.class, new LoginService());
-        Timer timer = new Timer();
-        viewContext.put(Timer.class, timer);
-        viewContext.put(CloseContext.class, timer::cancel);
+        ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
+        viewContext.put(ScheduledExecutorService.class, scheduledExecutorService);
+        viewContext.put(Action.class, WindowView.ACTION_CLOSE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    viewContext.close();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
 
         loginView.install(rootViewSite);
     }
 
 }
+

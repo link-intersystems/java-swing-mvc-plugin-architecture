@@ -1,5 +1,6 @@
 package com.link_intersystems.util.context;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -37,6 +38,21 @@ public interface Context {
     }
 
     boolean contains(ObjectQualifier<?> objectQualifier);
+
+    default <T> void ifContains(Class<T> type, Consumer<T> objectConsumer) {
+        ifContains(type, null, objectConsumer);
+    }
+
+    default <T> void ifContains(Class<T> type, String name, Consumer<T> objectConsumer) {
+        ifContains(new ObjectQualifier<>(type, name), objectConsumer);
+    }
+
+    default <T> void ifContains(ObjectQualifier<T> objectQualifier, Consumer<T> objectConsumer) {
+        if (contains(objectQualifier)) {
+            T object = get(objectQualifier);
+            objectConsumer.accept(object);
+        }
+    }
 
     default <T> T get(Class<T> type) throws ContextObjectException {
         return get(type, null);

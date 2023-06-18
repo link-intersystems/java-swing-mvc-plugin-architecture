@@ -22,7 +22,7 @@ class DefaultContextTest {
     @Test
     void putObjectTwice() {
         context.put(String.class, "A");
-        assertThrows(IllegalArgumentException.class, () -> context.put(String.class, new String("A")));
+        assertThrows(DuplicateObjectException.class, () -> context.put(String.class, new String("A")));
     }
 
     @Test
@@ -34,7 +34,7 @@ class DefaultContextTest {
     @Test
     void putNamedObjectTwice() {
         context.put(String.class, "model1", "A");
-        assertThrows(IllegalArgumentException.class, () -> context.put(String.class, "model1", new String("A")));
+        assertThrows(DuplicateObjectException.class, () -> context.put(String.class, "model1", new String("A")));
     }
 
     @Test
@@ -64,7 +64,7 @@ class DefaultContextTest {
 
         assertTrue(context.remove(String.class));
 
-        assertNull(context.get(String.class));
+        assertThrows(NoSuchObjectException.class, () -> context.get(String.class));
     }
 
     @Test
@@ -80,7 +80,7 @@ class DefaultContextTest {
 
         context.remove(String.class, "model1");
 
-        assertNull(context.get(String.class, "model1"));
+        assertThrows(NoSuchObjectException.class, () -> context.get(String.class, "model1"));
     }
 
 
@@ -185,7 +185,7 @@ class DefaultContextTest {
 
     @Test
     void contains() {
-        context.put(String.class,  "A");
+        context.put(String.class, "A");
         context.put(String.class, "model1", "B");
         context.put(String.class, "model2", "C");
 

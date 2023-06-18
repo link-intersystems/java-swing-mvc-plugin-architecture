@@ -1,86 +1,30 @@
 package com.link_intersystems.fileeditor.login;
 
-import com.link_intersystems.fileeditor.main.ApplicationModel;
-import com.link_intersystems.fileeditor.main.ApplicationView;
-import com.link_intersystems.fileeditor.services.login.LoginResponseModel;
 import com.link_intersystems.fileeditor.services.login.LoginService;
-import com.link_intersystems.fileeditor.services.login.UserModel;
-import com.link_intersystems.swing.action.concurrent.TaskActionListener;
-import com.link_intersystems.swing.view.AbstractView;
 import com.link_intersystems.swing.view.ViewSite;
-import com.link_intersystems.util.context.CloseContext;
-import com.link_intersystems.util.context.Context;
+import com.link_intersystems.swing.view.window.WindowView;
 
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class LoginView extends AbstractView implements TaskActionListener<LoginResponseModel, Integer> {
+public class LoginView extends WindowView {
 
     private LoginAction loginAction;
-    private JDialog dialog;
     private JProgressBar progressBar;
     private JPasswordField passwordField;
     private JTextField usernameField;
     private JButton loginButton;
-    private Optional<TimerTask> resetProgressTask = Optional.empty();
 
-
-    @Override
-    public void doInstall(ViewSite viewSite) {
-        loginAction = createLoginAction(viewSite);
-
-        dialog = createComponent();
-        viewSite.setComponent(dialog);
-    }
-
-    private LoginAction createLoginAction(ViewSite viewSite) {
-        LoginService loginService = viewSite.get(LoginService.class);
-        return createLoginAction(loginService);
-    }
-
-    protected LoginAction createLoginAction(LoginService loginService) {
-        LoginAction loginAction = new LoginAction(loginService);
-        loginAction.putValue(Action.NAME, "Login");
-        loginAction.setTaskActionListener(this);
-        return loginAction;
-    }
-
-    @Override
-    public void uninstall() {
-        if (dialog == null) {
-            return;
-        }
-
-        dialog.dispose();
-        loginAction.setTaskActionListener(null);
-        loginAction = null;
-        usernameField = null;
-        passwordField = null;
-        loginButton = null;
-        dialog = null;
-    }
-
-    private JDialog createComponent() {
-        LoginModel loginModel = getLoginModel();
+    protected Window createWindow(ViewSite viewSite) {
+        loginAction = getLoginAction(viewSite);
+        LoginModel loginModel = loginAction.getLoginModel();
 
         JDialog dialog = new JDialog();
         dialog.setSize(new Dimension(500, 180));
         dialog.setLocationRelativeTo(null);
-        dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                ViewSite viewSite = getViewSite();
-                viewSite.get(CloseContext.class).close();
-                uninstall();
-            }
-        });
 
         Container contentPane = dialog.getContentPane();
 
@@ -140,88 +84,49 @@ public class LoginView extends AbstractView implements TaskActionListener<LoginR
         return dialog;
     }
 
-    private LoginModel getLoginModel() {
-        return loginAction.getLoginModel();
+
+    private LoginAction getLoginAction(ViewSite viewSite) {
+        LoginService loginService = viewSite.get(LoginService.class);
+        return getLoginAction(loginService);
+    }
+
+    protected LoginAction getLoginAction(LoginService loginService) {
+        LoginAction loginAction = createLoginAction(loginService);
+        loginAction.putValue(Action.NAME, "Login");
+
+        LoginViewMediator loginViewMediator = new LoginViewMediator(this, getViewSite());
+        loginAction.setTaskActionListener(loginViewMediator);
+
+        return loginAction;
+    }
+
+    protected LoginAction createLoginAction(LoginService loginService) {
+        return new LoginAction(loginService);
     }
 
     @Override
-    public void aboutToRun() {
-        resetProgressTask.ifPresent(TimerTask::cancel);
-        resetProgress();
+    protected void doUninstall(ViewSite viewSite) {
+        super.doUninstall(viewSite);
+        loginAction.setTaskActionListener(null);
+        loginAction = null;
+        usernameField = null;
+        passwordField = null;
+        loginButton = null;
     }
 
-    private void resetProgress() {
-        progressBar.setString("");
-        Color foreground = new JProgressBar().getForeground();
-        progressBar.setForeground(foreground);
-        progressBar.setStringPainted(false);
+    void setUsername(String username) {
+        usernameField.setText(username);
     }
 
-    @Override
-    public void done(LoginResponseModel result) {
-        if (result.isLoginSuccessful()) {
-            try {
-                UserModel userModel = putUserModel(result);
-                ApplicationModel applicationModel = createApplicationModel(userModel);
-
-                ApplicationView applicationView = new ApplicationView();
-                applicationView.setApplicationModel(applicationModel);
-
-                applicationView.install(getViewSite());
-            } finally {
-                this.uninstall();
-            }
-        } else {
-            progressBar.setString("Login failed!");
-            progressBar.setForeground(new Color(255, 50, 50));
-            progressBar.setStringPainted(true);
-
-            TimerTask resetProgressTask = new TimerTask() {
-                @Override
-                public void run() {
-                    resetProgress();
-                    LoginView.this.resetProgressTask = Optional.empty();
-                }
-            };
-            this.resetProgressTask = Optional.of(resetProgressTask);
-
-            schedule(resetProgressTask);
-        }
+    void setPassword(String password) {
+        passwordField.setText(password);
     }
 
-    protected void schedule(TimerTask resetProgress) {
-        Timer timer = getViewSite().get(Timer.class);
-        timer.schedule(resetProgress, 5000);
+    void performLogin() {
+        loginButton.doClick();
     }
 
-    JButton getLoginButton() {
-        return loginButton;
+    JProgressBar getProgressBar() {
+        return progressBar;
     }
-
-    JPasswordField getPasswordField() {
-        return passwordField;
-    }
-
-    JTextField getUsernameField() {
-        return usernameField;
-    }
-
-    private ApplicationModel createApplicationModel(UserModel userModel) {
-        ApplicationModel applicationModel = new ApplicationModel();
-        applicationModel.setApplicationName("File Editor");
-        applicationModel.setUserModel(userModel);
-        return applicationModel;
-    }
-
-    private UserModel putUserModel(LoginResponseModel result) {
-        UserModel userModel = new UserModel();
-        userModel.setUsername(result.getUsername());
-
-        Context viewSite = getViewSite();
-        viewSite.put(UserModel.class, userModel);
-
-        return userModel;
-    }
-
-
 }

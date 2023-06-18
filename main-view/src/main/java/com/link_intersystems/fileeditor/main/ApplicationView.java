@@ -5,42 +5,30 @@ import com.link_intersystems.swing.DisplayResolution;
 import com.link_intersystems.swing.action.ActionTrigger;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
-import com.link_intersystems.swing.view.AbstractView;
 import com.link_intersystems.swing.view.View;
 import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.swing.view.layout.DefaultViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayout;
 import com.link_intersystems.swing.view.layout.ViewLayoutContribution;
-import com.link_intersystems.util.context.CloseContext;
+import com.link_intersystems.swing.view.window.WindowView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.List;
 
-public class ApplicationView extends AbstractView {
+public class ApplicationView extends WindowView {
 
     private ApplicationModel applicationModel;
-    private JFrame frame;
 
     public void setApplicationModel(ApplicationModel applicationModel) {
         this.applicationModel = applicationModel;
     }
 
     @Override
-    public void doInstall(ViewSite viewSite) {
-        frame = new JFrame();
+    protected Window createWindow(ViewSite viewSite) {
+        JFrame frame = new JFrame();
         frame.setSize(DisplayResolution.VGA.getDimension());
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                viewSite.get(CloseContext.class).close();
-                uninstall();
-            }
-        });
         frame.setTitle(applicationModel.getTitle());
 
         Container contentPane = frame.getContentPane();
@@ -66,7 +54,10 @@ public class ApplicationView extends AbstractView {
                 view.install(viewSite);
             }
         });
+
         ActionTrigger.performAction(this, viewContributionAction);
+
+        return frame;
     }
 
     protected ViewLayout createViewLayout(ViewSite viewSite, Container contentPane) {
@@ -78,11 +69,5 @@ public class ApplicationView extends AbstractView {
         return viewLayout;
     }
 
-    @Override
-    protected void doUninstall(ViewSite viewSite) {
-        super.doUninstall(viewSite);
 
-        frame.dispose();
-        frame = null;
-    }
 }

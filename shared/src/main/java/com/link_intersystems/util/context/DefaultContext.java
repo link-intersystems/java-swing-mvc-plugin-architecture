@@ -1,12 +1,13 @@
 package com.link_intersystems.util.context;
 
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class DefaultContext extends AbstractContext {
+public class DefaultContext extends AbstractContext implements AutoCloseable {
 
     private Map<ObjectQualifier<?>, QualifiedObject<?>> qualifiedInstances;
 
@@ -51,4 +52,17 @@ public class DefaultContext extends AbstractContext {
         return qualifiedInstances.values().stream();
     }
 
+    @Override
+    public void close() throws Exception {
+        Collection<QualifiedObject<?>> values = qualifiedInstances.values();
+        for (QualifiedObject<?> qualifiedObject : values) {
+            Object object = qualifiedObject.getObject();
+
+            if (object != this && object instanceof AutoCloseable autoCloseable) {
+                autoCloseable.close();
+            }
+
+            remove(qualifiedObject.getQualifier());
+        }
+    }
 }
