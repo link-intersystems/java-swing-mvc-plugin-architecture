@@ -1,6 +1,7 @@
 package com.link_intersystems.fileeditor.main;
 
 import com.link_intersystems.fileeditor.menu.MenuView;
+import com.link_intersystems.fileeditor.services.login.UserModel;
 import com.link_intersystems.swing.DisplayResolution;
 import com.link_intersystems.swing.action.ActionTrigger;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;

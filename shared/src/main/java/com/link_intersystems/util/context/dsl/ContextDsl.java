@@ -109,6 +109,8 @@ public class ContextDsl {
         }
     }
 
+    private List<Runnable> unregisterListenersRunnables = new ArrayList<>();
+
     private Context context;
 
     public ContextDsl(Context context) {
@@ -135,6 +137,7 @@ public class ContextDsl {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(consumer, null);
                         listeners.add(listenerAdapter);
                         context.addViewContextListener(objectQualifier, listenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, listenerAdapter));
                     }
 
                     @Override
@@ -142,6 +145,7 @@ public class ContextDsl {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(requireNonNull(runnable), null);
                         listeners.add(runnableListenerAdapter);
                         context.addViewContextListener(objectQualifier, runnableListenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, runnableListenerAdapter));
                     }
                 });
             }
@@ -155,6 +159,7 @@ public class ContextDsl {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(null, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
                         context.addViewContextListener(objectQualifier, listenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, listenerAdapter));
                     }
 
                     @Override
@@ -162,6 +167,7 @@ public class ContextDsl {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(null, requireNonNull(runnable));
                         listeners.add(runnableListenerAdapter);
                         context.addViewContextListener(objectQualifier, runnableListenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, runnableListenerAdapter));
                     }
                 });
             }
@@ -174,6 +180,7 @@ public class ContextDsl {
                         ContextMediatorListenerAdapter<T> listenerAdapter = new ContextMediatorListenerAdapter<>(consumer, or -> consumer.accept(null));
                         listeners.add(listenerAdapter);
                         context.addViewContextListener(objectQualifier, listenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, listenerAdapter));
                     }
 
                     @Override
@@ -181,9 +188,15 @@ public class ContextDsl {
                         RunnableListenerAdapter<T> runnableListenerAdapter = new RunnableListenerAdapter<>(requireNonNull(runnable), requireNonNull(runnable));
                         listeners.add(runnableListenerAdapter);
                         context.addViewContextListener(objectQualifier, runnableListenerAdapter);
+                        unregisterListenersRunnables.add(() -> context.removeViewContextListener(objectQualifier, runnableListenerAdapter));
                     }
                 });
             }
         };
+    }
+
+    public void dispose() {
+        unregisterListenersRunnables.forEach(Runnable::run);
+        unregisterListenersRunnables.clear();
     }
 }
