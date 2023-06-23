@@ -6,5 +6,7 @@ interface TabModel {
 
     public String getTitle();
 
-    public ActionListener getCloseActionListener();
+    default public ActionListener getCloseActionListener() {
+        return null;
+    }
 }

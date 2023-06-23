@@ -36,13 +36,4 @@ public class DefaultViewSite extends AbstractViewSite {
         return viewContext;
     }
 
-    @Override
-    public boolean contains(ObjectQualifier<?> objectQualifier) {
-        return getViewContext().contains(objectQualifier);
-    }
-
-    @Override
-    public Stream<QualifiedObject<?>> stream() {
-        return getViewContext().stream();
-    }
 }

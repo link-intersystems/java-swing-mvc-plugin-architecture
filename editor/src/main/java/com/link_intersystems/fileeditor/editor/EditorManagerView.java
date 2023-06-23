@@ -3,68 +3,80 @@ package com.link_intersystems.fileeditor.editor;
 
 import com.link_intersystems.swing.view.AbstractView;
 import com.link_intersystems.swing.view.View;
+import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
 
 class EditorManagerView extends AbstractView implements EditorManager {
 
     private JTabbedPane editorsPane;
-    private View editorView;
-    private TabView tabView;
+    private List<View> subViews = new ArrayList<>();
 
     @Override
     public void doInstall(ViewSite viewSite) {
         editorsPane = new JTabbedPane();
-        viewSite.setComponent(editorsPane);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(editorsPane);
 
-        viewSite.put(EditorManager.class, this);
+        Context viewContext = viewSite.getViewContext();
+        viewContext.put(EditorManager.class, this);
     }
 
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
 
-        viewSite.remove(EditorManager.class);
+        Context viewContext = viewSite.getViewContext();
+        viewContext.remove(EditorManager.class);
 
-        tabView.uninstall();
-        tabView = null;
-
-        editorView.uninstall();
-        editorView = null;
+        subViews.forEach(View::uninstall);
+        subViews.clear();
 
         editorsPane = null;
     }
 
     @Override
-    public void addEditor(Editor editor) {
+    public void addEditor(EditorInput editorInput) {
         if (editorsPane != null) {
-            EditorContent editorContent = new EditorContent(editor, editorsPane);
-            ViewSite subViewSite = createSubViewSite(editorContent);
+            EditorView editorView = findEditorView(editorInput);
 
-            editorView = editor.getView();
-            editorView.install(subViewSite);
+            if (editorView == null) {
+                return;
+            }
 
-            tabView = new TabView();
-            TabModel tabModel = new TabModel() {
+            editorView.setEditorInput(editorInput);
 
-                @Override
-                public String getTitle() {
-                    return editor.getName();
-                }
+            EditorContent editorContent = new EditorContent(editorView, editorsPane);
+            ViewSite editorViewSite = createSubViewSite(editorContent);
+            editorView.install(editorViewSite);
 
-                @Override
-                public ActionListener getCloseActionListener() {
-                    return editor.getCloseAction();
-                }
-            };
+            editorContent.addCloseListener(ae -> {
+                editorView.uninstall();
+            });
 
-            tabView.setTabModel(tabModel);
-            TabContent tabContent = new TabContent(editorContent);
-            tabView.install(createSubViewSite(tabContent));
-
+            subViews.add(editorView);
             editorsPane.setSelectedIndex(editorContent.getTabIndex());
         }
     }
+
+    private EditorView findEditorView(EditorInput editorInput) {
+        ServiceLoader<EditorContribution> editorContributions = ServiceLoader.load(EditorContribution.class);
+
+        EditorView editorView = null;
+
+        for (EditorContribution editorContribution : editorContributions) {
+            editorView = editorContribution.accept(editorInput.getClass());
+            if (editorView != null) {
+                break;
+            }
+        }
+
+        return editorView;
+    }
+
 }

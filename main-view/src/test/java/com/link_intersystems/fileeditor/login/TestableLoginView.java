@@ -27,7 +27,7 @@ class TestableLoginView extends LoginView {
     }
 
     @Override
-    protected ViewSite createApplicationViewSite() {
+    protected ViewSite getApplicationViewSite() {
         return new DefaultViewSite(ViewContent.nullInstance(), getViewSite());
     }
 }

@@ -4,6 +4,7 @@ import com.link_intersystems.fileeditor.services.login.LoginService;
 import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.swing.view.window.WindowView;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 import javax.swing.text.Document;
@@ -19,9 +20,10 @@ public class LoginView extends WindowView {
 
     protected Window createWindow(ViewSite viewSite) {
         loginAction = getLoginAction(viewSite);
-        LoginModel loginModel = loginAction.getLoginModel();
+        LoginModel loginModel = getLoginModel();
 
         JDialog dialog = new JDialog();
+        dialog.setTitle("Login");
         dialog.setSize(new Dimension(500, 180));
         dialog.setLocationRelativeTo(null);
 
@@ -85,7 +87,8 @@ public class LoginView extends WindowView {
 
 
     private LoginAction getLoginAction(ViewSite viewSite) {
-        LoginService loginService = viewSite.get(LoginService.class);
+        Context viewContext = viewSite.getViewContext();
+        LoginService loginService = viewContext.get(LoginService.class);
         return getLoginAction(loginService);
     }
 
@@ -129,7 +132,12 @@ public class LoginView extends WindowView {
         return progressBar;
     }
 
-    protected ViewSite createApplicationViewSite() {
-        return new RootViewSite(getViewSite());
+    protected ViewSite getApplicationViewSite() {
+        Context viewContext = getViewSite().getViewContext();
+        return new RootViewSite(viewContext);
+    }
+
+    LoginModel getLoginModel() {
+        return loginAction.getLoginModel();
     }
 }

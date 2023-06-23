@@ -29,11 +29,7 @@ public class LoginAction extends DefaultTaskAction<LoginResponseModel, Integer> 
     @Override
     protected void prepareExecution() throws Exception {
         super.prepareExecution();
-        BoundedRangeModel initProgress = loginModel.getProgressModel();
 
-        initProgress.setMinimum(0);
-        initProgress.setMaximum(100);
-        initProgress.setValue(0);
     }
 
     @Override
@@ -49,16 +45,7 @@ public class LoginAction extends DefaultTaskAction<LoginResponseModel, Integer> 
     }
 
     protected void sleep() throws InterruptedException {
-        Thread.sleep(10);
-    }
-
-    @Override
-    public void publishIntermediateResults(List<Integer> chunks) {
-        super.publishIntermediateResults(chunks);
-
-        LoginModel loginModel = getLoginModel();
-        BoundedRangeModel initProgress = loginModel.getProgressModel();
-        initProgress.setValue(initProgress.getValue() + chunks.size());
+        Thread.sleep(8);
     }
 
     private String getUsername() {

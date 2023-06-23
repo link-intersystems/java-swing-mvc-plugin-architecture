@@ -5,12 +5,12 @@ import com.link_intersystems.fileeditor.main.ApplicationView;
 import com.link_intersystems.fileeditor.services.login.LoginResponseModel;
 import com.link_intersystems.fileeditor.services.login.UserModel;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;
-import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
@@ -32,7 +32,13 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
         if (resetProgressFuture != null) {
             resetProgressFuture.cancel(true);
         }
+
         resetProgress();
+    }
+
+    private BoundedRangeModel getProgressModel() {
+        LoginModel loginModel = loginView.getLoginModel();
+        return loginModel.getProgressModel();
     }
 
     private void resetProgress() {
@@ -42,40 +48,50 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
         progressBar.setForeground(foreground);
         progressBar.setStringPainted(false);
 
+        BoundedRangeModel progressModel = getProgressModel();
+
+        progressModel.setMinimum(0);
+        progressModel.setMaximum(100);
+        progressModel.setValue(0);
+
         resetProgressFuture = null;
+    }
+
+    @Override
+    public void publishIntermediateResults(List<Integer> chunks) {
+        BoundedRangeModel progressModel = getProgressModel();
+        progressModel.setValue(progressModel.getValue() + chunks.size());
     }
 
     @Override
     public void done(LoginResponseModel result) {
         if (result.isLoginSuccessful()) {
-            try {
-                UserModel userModel = putUserModel(result);
-                ApplicationModel applicationModel = createApplicationModel(userModel);
-
-                installApplicationView(applicationModel);
-            } finally {
-                loginView.uninstall();
-            }
+            onSuccessfulLogin(result);
         } else {
-            JProgressBar progressBar = loginView.getProgressBar();
-            progressBar.setString("Login failed!");
-            progressBar.setForeground(new Color(255, 50, 50));
-            progressBar.setStringPainted(true);
-
-            schedule(this::resetProgress);
+            onLoginFailed();
         }
     }
 
-    protected void installApplicationView(ApplicationModel applicationModel) {
-        ApplicationView applicationView = new ApplicationView();
-        applicationView.setApplicationModel(applicationModel);
+    private void onSuccessfulLogin(LoginResponseModel result) {
+        try {
+            UserModel userModel = putUserModel(result);
+            ApplicationModel applicationModel = createApplicationModel(userModel);
 
-        ViewSite viewSite = loginView.createApplicationViewSite();
-        applicationView.install(viewSite);
+            installApplicationView(applicationModel);
+        } finally {
+            loginView.uninstall();
+        }
     }
 
-    private ViewSite getViewSite() {
-        return viewSite;
+    private UserModel putUserModel(LoginResponseModel result) {
+        UserModel userModel = new UserModel();
+        userModel.setUsername(result.getUsername());
+
+
+        Context viewContext = viewSite.getViewContext();
+        viewContext.put(UserModel.class, userModel);
+
+        return userModel;
     }
 
     private ApplicationModel createApplicationModel(UserModel userModel) {
@@ -85,18 +101,26 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
         return applicationModel;
     }
 
-    private UserModel putUserModel(LoginResponseModel result) {
-        UserModel userModel = new UserModel();
-        userModel.setUsername(result.getUsername());
+    protected void installApplicationView(ApplicationModel applicationModel) {
+        ApplicationView applicationView = new ApplicationView();
+        applicationView.setApplicationModel(applicationModel);
 
-        Context viewSite = getViewSite();
-        viewSite.put(UserModel.class, userModel);
+        ViewSite viewSite = loginView.getApplicationViewSite();
+        applicationView.install(viewSite);
+    }
 
-        return userModel;
+    private void onLoginFailed() {
+        JProgressBar progressBar = loginView.getProgressBar();
+        progressBar.setString("Login failed!");
+        progressBar.setForeground(new Color(255, 50, 50));
+        progressBar.setStringPainted(true);
+
+        schedule(this::resetProgress);
     }
 
     private void schedule(Runnable resetProgress) {
-        ScheduledExecutorService executorService = getViewSite().get(ScheduledExecutorService.class);
+        Context viewContext = viewSite.getViewContext();
+        ScheduledExecutorService executorService = viewContext.get(ScheduledExecutorService.class);
         resetProgressFuture = executorService.schedule(resetProgress, 5, SECONDS);
     }
 }

@@ -2,7 +2,9 @@ package com.link_intersystems.swing.view.window;
 
 import com.link_intersystems.swing.action.ActionTrigger;
 import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +15,7 @@ import static javax.swing.WindowConstants.*;
 
 public abstract class WindowView extends AbstractView {
 
-    public static final String ACTION_CLOSE = WindowView.class.getName() + ".closeAction";
+    public static final String DEFAULT_CLOSE_ACTION = WindowView.class.getName() + ".closeAction";
     private ActionTrigger actionTrigger = new ActionTrigger(this);
 
     private Window window;
@@ -30,7 +32,8 @@ public abstract class WindowView extends AbstractView {
         window = createWindow(viewSite);
         setDefaultCloseOperation(window, DO_NOTHING_ON_CLOSE);
         window.addWindowListener(closeHandler);
-        viewSite.setComponent(window);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(window);
     }
 
     protected void setDefaultCloseOperation(Window window, int closeOperation) {
@@ -56,6 +59,7 @@ public abstract class WindowView extends AbstractView {
 
     protected void onCloseWindow(ViewSite viewSite) {
         uninstall();
-        viewSite.ifContains(Action.class, ACTION_CLOSE, actionTrigger::performAction);
+        Context viewContext = viewSite.getViewContext();
+        viewContext.ifContains(Action.class, DEFAULT_CLOSE_ACTION, actionTrigger::performAction);
     }
 }

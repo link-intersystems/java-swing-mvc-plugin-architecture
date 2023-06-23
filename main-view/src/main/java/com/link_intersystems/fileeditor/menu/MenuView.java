@@ -5,7 +5,9 @@ import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.action.spi.ServiceLoaderAction;
 import com.link_intersystems.swing.menu.MenuContribution;
 import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
 import java.util.List;
@@ -21,7 +23,8 @@ public class MenuView extends AbstractView implements TaskActionListener<List<Me
         fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
 
-        viewSite.setComponent(menuBar);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(menuBar);
 
         ServiceLoaderAction<MenuContribution> menuContributionAction = new ServiceLoaderAction<>(MenuContribution.class);
         menuContributionAction.setTaskActionListener(this);
@@ -38,7 +41,8 @@ public class MenuView extends AbstractView implements TaskActionListener<List<Me
 
         if (menuPath.equals("file")) {
             ViewSite viewSite = getViewSite();
-            fileMenu.add(menuContribution.getAction(viewSite));
+            Context viewContext = viewSite.getViewContext();
+            fileMenu.add(menuContribution.getAction(viewContext));
         }
     }
 }

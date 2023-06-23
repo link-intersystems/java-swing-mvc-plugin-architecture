@@ -22,7 +22,7 @@ public class FileEditorApp {
         viewContext.put(LoginService.class, new LoginService());
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
         viewContext.put(ScheduledExecutorService.class, scheduledExecutorService);
-        viewContext.put(Action.class, WindowView.ACTION_CLOSE, new AbstractAction() {
+        viewContext.put(Action.class, WindowView.DEFAULT_CLOSE_ACTION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {

@@ -1,22 +1,40 @@
 package com.link_intersystems.fileeditor.editor.file;
 
 
+import com.link_intersystems.fileeditor.editor.EditorInput;
+import com.link_intersystems.fileeditor.editor.EditorView;
 import com.link_intersystems.swing.action.ActionTrigger;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;
 import com.link_intersystems.swing.view.AbstractView;
+import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
 
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.io.File;
 
-public class FileEditorView extends AbstractView implements TaskActionListener<Document, Void> {
+public class FileEditorView extends AbstractView implements TaskActionListener<Document, Void>, EditorView {
 
     private JEditorPane editorPane;
-    private File file;
+    private FileEditorInput fileEditorInput;
 
-    public FileEditorView(File file) {
-        this.file = file;
+    @Override
+    public void setEditorInput(EditorInput editorInput) {
+        if (editorInput instanceof FileEditorInput fileEditorInput) {
+            this.fileEditorInput = fileEditorInput;
+            return;
+        }
+
+        throw new IllegalArgumentException("Can not handle " + fileEditorInput);
+    }
+
+    @Override
+    public String getName() {
+        if (fileEditorInput != null) {
+            return fileEditorInput.getName();
+        }
+
+        return "";
     }
 
     @Override
@@ -24,8 +42,10 @@ public class FileEditorView extends AbstractView implements TaskActionListener<D
         editorPane = new JEditorPane();
         JScrollPane editorScrollPane = new JScrollPane(editorPane);
 
-        viewSite.setComponent(editorScrollPane);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(editorScrollPane);
 
+        File file = fileEditorInput.getFile();
         OpenFileAction openFileAction = new OpenFileAction(file);
         openFileAction.setTaskActionListener(this);
 
@@ -35,7 +55,8 @@ public class FileEditorView extends AbstractView implements TaskActionListener<D
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
-        viewSite.setComponent(null);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(null);
         editorPane = null;
     }
 

@@ -5,6 +5,7 @@ import com.link_intersystems.fileeditor.services.login.LoginServiceMock;
 import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
+import com.link_intersystems.util.context.Context;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,8 @@ class LoginViewTest {
 
         scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
         ScheduledExecutorService executorServiceMock = Mockito.mock(ScheduledExecutorService.class);
-        viewSite.put(ScheduledExecutorService.class, executorServiceMock);
+        Context viewContext = viewSite.getViewContext();
+        viewContext.put(ScheduledExecutorService.class, executorServiceMock);
 
         Mockito.doAnswer((Answer<Object>) invocation -> {
             ScheduledFuture<?> scheduledFuture = scheduledExecutorService.schedule((Runnable) invocation.getArgument(0), 0, invocation.getArgument(2));
@@ -47,7 +49,7 @@ class LoginViewTest {
             return scheduledFuture;
         }).when(executorServiceMock).schedule(Mockito.any(Runnable.class), Mockito.anyLong(), Mockito.any(TimeUnit.class));
 
-        viewSite.put(LoginService.class, loginService);
+        viewContext.put(LoginService.class, loginService);
     }
 
     @AfterEach

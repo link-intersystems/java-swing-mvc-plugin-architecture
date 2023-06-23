@@ -1,5 +1,6 @@
 package com.link_intersystems.swing.view;
 
+import com.link_intersystems.util.context.Context;
 import com.link_intersystems.util.context.dsl.ContextDsl;
 
 import static java.util.Objects.*;
@@ -12,7 +13,8 @@ public abstract class AbstractView implements View {
     @Override
     public void install(ViewSite viewSite) {
         this.viewSite = requireNonNull(viewSite);
-        this.contextDsl = new ContextDsl(viewSite);
+        Context viewContext = viewSite.getViewContext();
+        this.contextDsl = new ContextDsl(viewContext);
         doInstall(viewSite);
     }
 
@@ -39,11 +41,12 @@ public abstract class AbstractView implements View {
     }
 
     protected void doUninstall(ViewSite viewSite) {
-        viewSite.setComponent(null);
+        ViewContent viewContent = viewSite.getViewContent();
+        viewContent.setComponent(null);
     }
 
     protected ViewSite createSubViewSite(ViewContent viewContent) {
-        ViewSite subViewSite = new DefaultViewSite(viewContent, viewSite);
-        return subViewSite;
+        Context viewContext = viewSite.getViewContext();
+        return new DefaultViewSite(viewContent, viewContext);
     }
 }
