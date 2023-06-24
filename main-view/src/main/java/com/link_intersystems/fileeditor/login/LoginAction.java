@@ -5,10 +5,8 @@ import com.link_intersystems.fileeditor.services.login.LoginService;
 import com.link_intersystems.swing.action.concurrent.DefaultTaskAction;
 import com.link_intersystems.util.concurrent.task.TaskProgress;
 
-import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import java.util.List;
 
 import static java.util.Objects.*;
 

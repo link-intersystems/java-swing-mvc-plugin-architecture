@@ -9,8 +9,21 @@ import com.link_intersystems.util.context.Context;
 import javax.swing.*;
 import javax.swing.text.Document;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 public class LoginView extends WindowView {
+
+    private PropertyChangeListener enablementSynchronizer = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            if ("enabled".equals(evt.getPropertyName())) {
+                boolean enabled = (Boolean) evt.getNewValue();
+                usernameField.setEnabled(enabled);
+                passwordField.setEnabled(enabled);
+            }
+        }
+    };
 
     private LoginAction loginAction;
     private JProgressBar progressBar;
@@ -20,6 +33,8 @@ public class LoginView extends WindowView {
 
     protected Window createWindow(ViewSite viewSite) {
         loginAction = getLoginAction(viewSite);
+        loginAction.addPropertyChangeListener(enablementSynchronizer);
+
         LoginModel loginModel = getLoginModel();
 
         JDialog dialog = new JDialog();
@@ -62,6 +77,10 @@ public class LoginView extends WindowView {
         passwordField.addActionListener(loginAction);
 
         loginButton = new JButton(loginAction);
+        KeyStroke enter = KeyStroke.getKeyStroke("ENTER");
+        loginButton.getInputMap(JComponent.WHEN_FOCUSED).put(enter, "loginAction");
+        loginButton.getActionMap().put("loginAction", loginAction);
+
 
         gbc.gridx = 0;
         gbc.weightx = 0;
@@ -91,6 +110,7 @@ public class LoginView extends WindowView {
     private LoginAction getLoginAction(ViewSite viewSite) {
         Context viewContext = viewSite.getViewContext();
         LoginService loginService = viewContext.get(LoginService.class);
+
         return getLoginAction(loginService);
     }
 
@@ -111,7 +131,10 @@ public class LoginView extends WindowView {
     @Override
     protected void doUninstall(ViewSite viewSite) {
         super.doUninstall(viewSite);
+
         loginAction.setTaskActionListener(null);
+        loginAction.removePropertyChangeListener(enablementSynchronizer);
+
         loginAction = null;
         usernameField = null;
         passwordField = null;
