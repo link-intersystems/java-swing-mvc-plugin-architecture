@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.mvc</groupId>
-            <artifactId>shared</artifactId>
+            <artifactId>main-view-api</artifactId>
             <version>1</version>
         </dependency>
     </dependencies>

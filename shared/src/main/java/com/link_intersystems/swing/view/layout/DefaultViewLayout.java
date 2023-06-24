@@ -33,6 +33,9 @@ public class DefaultViewLayout implements ViewLayout {
     @Override
     public void install(String viewSiteName, View view) {
         ViewSite viewSite = layout.get(viewSiteName);
+        if (viewSite == null) {
+            throw new IllegalArgumentException("No viewSite named " + viewSiteName + " existent in " + this);
+        }
         view.install(viewSite);
         installedViews.put(viewSiteName, view);
         viewContainer.revalidate();

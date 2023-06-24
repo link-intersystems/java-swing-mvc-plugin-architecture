@@ -16,6 +16,7 @@
         <module>editor</module>
         <module>shared</module>
         <module>main</module>
+        <module>main-view-api</module>
     </modules>
 
     <properties>

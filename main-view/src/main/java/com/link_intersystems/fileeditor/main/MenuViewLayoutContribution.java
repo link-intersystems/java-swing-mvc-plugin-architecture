@@ -8,6 +8,6 @@ public class MenuViewLayoutContribution extends AbstractViewLayoutContribution {
 
     @Override
     public void doInstall(ViewLayout viewLayout) {
-        viewLayout.install("menuSite", new MenuView());
+        viewLayout.install("menu", new MenuView());
     }
 }

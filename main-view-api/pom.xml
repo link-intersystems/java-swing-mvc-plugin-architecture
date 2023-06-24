@@ -9,12 +9,12 @@
         <version>1</version>
     </parent>
 
-    <artifactId>editor</artifactId>
+    <artifactId>main-view-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.mvc</groupId>
-            <artifactId>main-view-api</artifactId>
+            <artifactId>shared</artifactId>
             <version>1</version>
         </dependency>
     </dependencies>
