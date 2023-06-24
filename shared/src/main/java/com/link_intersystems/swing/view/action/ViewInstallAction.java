@@ -23,23 +23,8 @@ public class ViewInstallAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!isEnabled()) {
-            return;
-        }
-
         view = viewSupplier.get();
         view.install(viewSiteSupplier.get());
-        setEnabled(false);
     }
 
-    public Action getUninstallAction() {
-        return new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                view.uninstall();
-                view = null;
-                setEnabled(true);
-            }
-        };
-    }
 }

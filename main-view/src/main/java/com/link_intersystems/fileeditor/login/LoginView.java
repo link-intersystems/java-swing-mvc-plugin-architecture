@@ -43,6 +43,7 @@ public class LoginView extends WindowView {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(usernameField, gbc);
+        usernameField.addActionListener(loginAction);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -58,6 +59,7 @@ public class LoginView extends WindowView {
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         contentPane.add(passwordField, gbc);
+        passwordField.addActionListener(loginAction);
 
         loginButton = new JButton(loginAction);
 

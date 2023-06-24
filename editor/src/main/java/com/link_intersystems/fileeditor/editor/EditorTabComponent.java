@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.*;
+
 class EditorTabComponent extends JPanel {
 
     private final JLabel titleLabel;
@@ -47,8 +49,17 @@ class EditorTabComponent extends JPanel {
         add(closeButton, gbc);
     }
 
-    public void setTabModel(TabModel tabModel) {
+    public void setModel(TabModel tabModel) {
+        this.tabModel = requireNonNull(tabModel);
+        onTabModelChanged();
+    }
+
+    private void onTabModelChanged() {
         titleLabel.setText(tabModel.getTitle());
+    }
+
+    public TabModel getModel() {
+        return tabModel;
     }
 
     public void addCloseListener(ActionListener actionListener) {

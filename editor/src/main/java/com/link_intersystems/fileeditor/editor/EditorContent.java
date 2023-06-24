@@ -10,8 +10,8 @@ class EditorContent implements ViewContent {
 
     private EditorView editor;
     private JTabbedPane tabbedPane;
-    private Integer tabIndex;
     private EditorTabComponent editorTabComponent = new EditorTabComponent();
+    private Component component;
 
     public EditorContent(EditorView editor, JTabbedPane tabbedPane) {
         this.editor = editor;
@@ -20,29 +20,31 @@ class EditorContent implements ViewContent {
 
     @Override
     public void setComponent(Component component) {
+        int tabIndex = getTabIndex();
+        this.component = component;
+
         if (component == null) {
-            if (tabIndex != null) {
+            if (tabIndex > -1) {
                 tabbedPane.removeTabAt(tabIndex);
-                tabIndex = null;
             }
         } else {
-            if (tabIndex == null) {
+            if (tabIndex < 0) {
                 addTab(component);
                 initTab();
             }
         }
+
     }
 
     private void addTab(Component component) {
         tabbedPane.addTab(editor.getName(), component);
-        tabIndex = tabbedPane.getTabCount() - 1;
     }
 
     public void initTab() {
         setTabComponent(null);
 
         TabModel tabModel = createTabModel(editor);
-        editorTabComponent.setTabModel(tabModel);
+        editorTabComponent.setModel(tabModel);
 
         setTabComponent(editorTabComponent);
     }
@@ -69,11 +71,12 @@ class EditorContent implements ViewContent {
     }
 
     int getTabIndex() {
-        return tabIndex != null ? tabIndex : -1;
+        return tabbedPane.indexOfComponent(component);
     }
 
     private void setTabComponent(Component tabComponentAt) {
-        tabbedPane.setTabComponentAt(getTabIndex(), tabComponentAt);
+        int tabIndex = getTabIndex();
+        tabbedPane.setTabComponentAt(tabIndex, tabComponentAt);
     }
 
     public void addCloseListener(ActionListener actionListener) {

@@ -7,6 +7,7 @@ import com.link_intersystems.swing.view.ViewSite;
 import com.link_intersystems.util.context.Context;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
@@ -17,9 +18,10 @@ public class OpenFileView extends AbstractView {
         ViewContent viewContent = viewSite.getViewContent();
         Component parentComponent = viewContent.getParent();
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text-Files", "txt", "xml", "json", "ini"));
         int returnVal = fileChooser.showOpenDialog(parentComponent);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
 
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             Context viewContext = viewSite.getViewContext();
             EditorManager editorManager = viewContext.get(EditorManager.class);
@@ -28,4 +30,6 @@ public class OpenFileView extends AbstractView {
 
         uninstall();
     }
+
+
 }
