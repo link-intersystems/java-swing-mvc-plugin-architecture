@@ -19,7 +19,10 @@ public class FileEditorApp {
         DefaultContext viewContext = new DefaultContext();
         RootViewSite rootViewSite = new RootViewSite(viewContext);
 
-        viewContext.put(LoginService.class, new LoginService());
+        LoginService loginService = new LoginService();
+        loginService.registerUser("rene", "link");
+        viewContext.put(LoginService.class, loginService);
+
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
         viewContext.put(ScheduledExecutorService.class, scheduledExecutorService);
         viewContext.put(Action.class, WindowView.DEFAULT_CLOSE_ACTION, new AbstractAction() {

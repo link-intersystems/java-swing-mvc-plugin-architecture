@@ -6,6 +6,8 @@ import com.link_intersystems.util.context.Context;
 
 import java.awt.*;
 
+import static java.awt.BorderLayout.*;
+
 public abstract class MainViewLayout {
 
     public static final String MAIN_VIEW_LAYOUT = "main";
@@ -17,8 +19,8 @@ public abstract class MainViewLayout {
     static ViewLayout createViewLayout(Context viewContext, Container contentPane) {
         DefaultViewLayout viewLayout = new DefaultViewLayout(viewContext, contentPane);
 
-        viewLayout.addViewSite(MENU_VIEW_SITE, BorderLayout.NORTH);
-        viewLayout.addViewSite(EDITOR_VIEW_SITE, BorderLayout.CENTER);
+        viewLayout.addViewSite(MENU_VIEW_SITE, NORTH);
+        viewLayout.addViewSite(EDITOR_VIEW_SITE, CENTER);
 
         return viewLayout;
     }

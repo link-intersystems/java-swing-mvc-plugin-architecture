@@ -43,7 +43,7 @@ public class LoginViewMediator implements TaskActionListener<LoginResponseModel,
 
     private void resetProgress() {
         JProgressBar progressBar = loginView.getProgressBar();
-        progressBar.setString("");
+        progressBar.setString(null);
         Color foreground = new JProgressBar().getForeground();
         progressBar.setForeground(foreground);
         progressBar.setStringPainted(false);

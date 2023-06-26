@@ -27,7 +27,6 @@ public class LoginAction extends DefaultTaskAction<LoginResponseModel, Integer> 
     @Override
     protected void prepareExecution() throws Exception {
         super.prepareExecution();
-
     }
 
     @Override
