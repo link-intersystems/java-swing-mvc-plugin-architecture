@@ -1,6 +1,8 @@
 # A pluggable Java Swing MVC architecture
 
-This repository contains an example application that is based on a pluggable Java Swing MVC architecture.
+This repository contains a Java Swing example application that is based on 
+a pluggable MVC architecture. It is an attempt to show how pluggable user interfaces
+can be implemented and the basic concepts are not constraint to Java Swing at all.
 
 ## The Architecture
 
