@@ -172,3 +172,5 @@ The parent `View` can either delegate it's `Context` to the child view or create
 In my architecture the `View` also contains the logic of how the MVC model, view (ui components) and controller is instantiated and are wired together. It also
 knows how to `uninstall` or destruct that composition. If a view is moved from one `ViewSite` to another, e.g. using drag and drop, the view must be uninstalled 
 and installed at the new view site.
+
+A `ViewLayout` is a description of `ViewSite`s that are available in a particular `View`.
