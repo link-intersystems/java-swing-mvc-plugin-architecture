@@ -120,12 +120,12 @@ But no matter how you see the MVC and which diagram makes more sense to you, the
 The first though that comes in mind is that there must be some kind of factory. This factory would be the most detail, since it knows all 
 the components and how to instantiate them, and it knows the infrastructure.
 
-So the first approach would be to just create something, let's name it `MVCPart`, that takes a ServiceLocator or something and does the instantiation and wiring job.
-But views open other views and if they do that they must use another `MVCPart` and this part also needs the service locator in order
+So the first approach would be to just create something, let's name it MVCPart, that takes a ServiceLocator or something and does the instantiation and wiring job.
+But views open other views and if they do that they must use another MVCPart and this part also needs the service locator in order
 to connect the controllers to the infrastructure. Hmm, should we pass the service locator through the
 MVCParts and the view that it creates? And if we do that it means that the view that opens another view must have a reference to the service locator or
-at least an `MVCPart` that has a dependency to a service locator. So whoever instantiates the `MVCPart` must have a dependency to the service locator.
-If it is a view that was created by another `MVCPart` then this view must have a dependency to the service locator.
+at least an MVCPart that has a dependency to a service locator. So whoever instantiates the MVCPart must have a dependency to the service locator.
+If it is a view that was created by another MVCPart then this view must have a dependency to the service locator.
 
 Even when you think that a service locator is not an appropriate way of wiring components with the infrastructure, other ways
 will lead to the same problems. E.g. if you use a dependency injection framework, the view that opens another view must be injected by the
@@ -158,12 +158,17 @@ So don't be too cruel with me if you don't like my way. You should see it as a s
 
 ![MVC Class Model](res/MVC%20Class%20Model.png)
 
-In my architecture I use the term `ViewSite`. A `ViewSite` is a place or location where a `View` is installed. It also provides access to the infrastructure
-and the application state through a `Context`. The `Context` is nothing more than a place where objects can be stored and retrieved from. 
+I extended the View from the original MVC and connected it with a `ViewSite`. So my view is a combination of a "normal" view that just defines UI components and the MVCPart that I described above.
+One might argue that it would be better to have a dedicated MVCPart and a separate view, but I wanted to keep the component count small, so I merged both aspects into one class.
+
+A `ViewSite` is a place or location where a `View` is installed. It also provides access to the infrastructure and the application state through a `Context`. The `Context` is nothing more than a place where objects can be stored and retrieved from. 
 It can be used to share application state as well as providing infrastructure services.
 
-Each `View` can declare its own `ViewSite`s where other `View`s can be installed to. The parent `View` can either delegate it's
-`Context` to the child view or create a dedicated `Context`.
+Each `View` can declare its own `ViewSite`s where other `View`s can be installed to. So the center of a border layout might be a `ViewSite`.  
+The parent `View` can either delegate it's `Context` to the child view or create a dedicated `Context`.
 
-The `View` contains the logic of how the MVC model, view and controller is instantiated and are wired together. It also
-knows how to `uninstall` or destruct that composition.
+![View Site Example](res/view-sites.png)
+
+In my architecture the `View` also contains the logic of how the MVC model, view (ui components) and controller is instantiated and are wired together. It also
+knows how to `uninstall` or destruct that composition. If a view is moved from one `ViewSite` to another, e.g. using drag and drop, the view must be uninstalled 
+and installed at the new view site.
