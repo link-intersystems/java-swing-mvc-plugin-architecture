@@ -4,7 +4,7 @@
 
 This repository contains a Java Swing example application that is based on 
 a pluggable MVC architecture. It is an attempt to show how pluggable user interfaces
-can be implemented, and the basic concepts are not constraint to Java Swing at all.
+can be implemented, and **the basic concepts are not constraint to Java Swing at all**.
 
 ## The Architecture
 
@@ -36,7 +36,7 @@ In his work he described the pattern with the following diagram:
 
 ##### MVC - wikipedia - english
 
-In the english wikipedia article the MVC pattern is described using slightly different diagram.
+In the english wikipedia article the MVC pattern is described using a slightly different diagram.
 
 ![MVC - wikipedia - english](res/mvc-wiki-en-23.06.2023.png)
 
