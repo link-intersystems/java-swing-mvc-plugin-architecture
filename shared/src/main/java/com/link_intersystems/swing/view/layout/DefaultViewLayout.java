@@ -49,4 +49,8 @@ public class DefaultViewLayout implements ViewLayout {
             viewContainer.revalidate();
         }
     }
+
+    public void dispose() {
+        installedViews.keySet().forEach(this::remove);
+    }
 }

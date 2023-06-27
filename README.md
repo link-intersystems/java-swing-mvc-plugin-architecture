@@ -174,3 +174,155 @@ knows how to `uninstall` or destruct that composition. If a view is moved from o
 and installed at the new view site.
 
 A `ViewLayout` is a description of `ViewSite`s that are available in a particular `View`.
+
+Here is a simple example of how my architecture works:
+
+1. Create a view that should be visible in the main window
+
+        public class ViewSiteView implements View {
+        
+            private final String name;
+        
+            private JPanel panel;
+            private ViewSite viewSite;
+        
+            public ViewSiteView(String name) {
+                this.name = requireNonNull(name);
+            }
+        
+            @Override
+            public void install(ViewSite viewSite) {
+                this.viewSite = viewSite;
+        
+                panel = new JPanel();
+                panel.setLayout(new GridBagLayout());
+        
+                JLabel jLabel = new JLabel(name);
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.insets = new Insets(5, 5, 5, 5);
+                panel.add(jLabel, gbc);
+        
+                panel.setBorder(BorderFactory.createLineBorder(new Color(50, 50, 50)));
+        
+                ViewContent viewContent = viewSite.getViewContent();
+                viewContent.setComponent(panel);
+            }
+        
+            @Override
+            public void uninstall() {
+                if (viewSite == null) {
+                    return;
+                }
+        
+                ViewContent viewContent = viewSite.getViewContent();
+                viewContent.setComponent(null);
+        
+                viewSite = null;
+            }
+        }
+
+   2.  Create the main window view
+
+           public class ViewSiteExampleView implements View {
+        
+               // Define the view site names
+               public static final String TOP = "top";
+               public static final String BOTTOM = "bottom";
+               public static final String LEFT = "left";
+               public static final String RIGHT = "right";
+               public static final String MIDDLE = "middle";
+    
+               private ViewSite viewSite;
+               private JFrame frame;
+               private DefaultViewLayout viewLayout;
+    
+               @Override
+               public void install(ViewSite viewSite) {
+                   this.viewSite = viewSite;
+    
+                   // Create the main view component                
+                   frame = new JFrame("ViewSite Example");
+                   frame.setSize(640, 480);
+                   frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                   frame.addWindowListener(new WindowAdapter() {
+                       @Override
+                       public void windowClosing(WindowEvent e) {
+                           uninstall();
+                       }
+                   });
+        
+                   frame.setLocationRelativeTo(null);
+        
+                   // Create the ViewLayout
+                   Container contentPane = frame.getContentPane();
+                   Context viewContext = viewSite.getViewContext();
+                   viewLayout = createViewLayout(viewContext, contentPane);
+                   viewContext.put(ViewLayout.class, viewLayout);
+        
+                   // Instal views into the ViewLayout's view sites
+                   installView(viewLayout, TOP, "ViewSite north");
+                   installView(viewLayout, BOTTOM, "ViewSite south");
+                   installView(viewLayout, LEFT, "ViewSite west");
+                   installView(viewLayout, RIGHT, "ViewSite east");
+                   installView(viewLayout, MIDDLE, "ViewSite center");
+        
+                   // Make the main frame visible by setting the ViewContent
+                   ViewContent viewContent = viewSite.getViewContent();
+                   viewContent.setComponent(frame);
+               }
+    
+               private DefaultViewLayout createViewLayout(Context viewContext, Container viewContainer) {
+                   DefaultViewLayout viewLayout = new DefaultViewLayout(viewContext, viewContainer);
+    
+                   viewLayout.addViewSite(TOP, NORTH);
+                   viewLayout.addViewSite(BOTTOM, SOUTH);
+                   viewLayout.addViewSite(LEFT, WEST);
+                   viewLayout.addViewSite(RIGHT, EAST);
+                   viewLayout.addViewSite(MIDDLE, CENTER);
+    
+                   return viewLayout;
+               }
+    
+               private void installView(ViewLayout viewLayout, String viewSiteName, String areaName) {
+                   ViewSiteView viewSiteView = new ViewSiteView(areaName);
+                   viewLayout.install(viewSiteName, viewSiteView);
+               } 
+        
+               // Uninstall in reverse order
+               @Override
+               public void uninstall() {
+                   if (viewSite == null) {
+                       return;
+                   }
+        
+                   viewLayout.dispose();
+        
+                   Context viewContext = viewSite.getViewContext();
+                   viewContext.remove(ViewLayout.class);
+                   viewLayout = null;
+        
+                   ViewContent viewContent = viewSite.getViewContent();
+                   viewContent.setComponent(null);
+        
+                   frame.dispose();
+                   frame = null;
+        
+                   viewSite = null;
+               }
+           }
+
+3. Create a main class
+
+       public class ViewSiteExample {
+    
+           public static void main(String[] args) {
+               ViewSiteExampleView viewSiteExampleView = new ViewSiteExampleView();
+    
+               RootViewSite rootViewSite = new RootViewSite(new DefaultContext());
+               viewSiteExampleView.install(rootViewSite);
+           }
+    
+       }
+
+
