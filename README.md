@@ -331,6 +331,10 @@ In order to create a pluggable MVC architecture I'm using Java's [`ServiceLoader
 view uses in order to install other views in it's `ViewLayout`. These other views are located using the
 [`ServiceLoader`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ServiceLoader.html). E.g.
 
+> You can find a detailed explanation about the `ServiceLoader` in my blog [A plug-in architecture implemented with java](https://link-intersystems.com/blog/2016/01/02/a-plug-in-architecture-implemented-with-java/) that
+> was published on January 2, 2016 on [link-intersystems.com](https://www.link-intersystems.com).
+
+
 1. Define a `ViewLayoutContribution` interface so that other views can provide a contribution to the view layout.
 
         public interface ViewLayoutContribution {
