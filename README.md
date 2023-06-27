@@ -222,95 +222,95 @@ Here is a simple example of how my architecture works:
             }
         }
 
-   2.  Create the main window view
+2.  Create the main window view
 
-           public class ViewSiteExampleView implements View {
+        public class ViewSiteExampleView implements View {
         
-               // Define the view site names
-               public static final String TOP = "top";
-               public static final String BOTTOM = "bottom";
-               public static final String LEFT = "left";
-               public static final String RIGHT = "right";
-               public static final String MIDDLE = "middle";
+            // Define the view site names
+            public static final String TOP = "top";
+            public static final String BOTTOM = "bottom";
+            public static final String LEFT = "left";
+            public static final String RIGHT = "right";
+            public static final String MIDDLE = "middle";
     
-               private ViewSite viewSite;
-               private JFrame frame;
-               private DefaultViewLayout viewLayout;
+            private ViewSite viewSite;
+            private JFrame frame;
+            private DefaultViewLayout viewLayout;
     
-               @Override
-               public void install(ViewSite viewSite) {
-                   this.viewSite = viewSite;
+            @Override
+            public void install(ViewSite viewSite) {
+                this.viewSite = viewSite;
     
-                   // Create the main view component                
-                   frame = new JFrame("ViewSite Example");
-                   frame.setSize(640, 480);
-                   frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-                   frame.addWindowListener(new WindowAdapter() {
-                       @Override
-                       public void windowClosing(WindowEvent e) {
-                           uninstall();
-                       }
-                   });
+                // Create the main view component                
+                frame = new JFrame("ViewSite Example");
+                frame.setSize(640, 480);
+                frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+                frame.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        uninstall();
+                    }
+                });
         
-                   frame.setLocationRelativeTo(null);
+                frame.setLocationRelativeTo(null);
         
-                   // Create the ViewLayout
-                   Container contentPane = frame.getContentPane();
-                   Context viewContext = viewSite.getViewContext();
-                   viewLayout = createViewLayout(viewContext, contentPane);
-                   viewContext.put(ViewLayout.class, viewLayout);
+                // Create the ViewLayout
+                Container contentPane = frame.getContentPane();
+                Context viewContext = viewSite.getViewContext();
+                viewLayout = createViewLayout(viewContext, contentPane);
+                viewContext.put(ViewLayout.class, viewLayout);
         
-                   // Instal views into the ViewLayout's view sites
-                   installView(viewLayout, TOP, "ViewSite north");
-                   installView(viewLayout, BOTTOM, "ViewSite south");
-                   installView(viewLayout, LEFT, "ViewSite west");
-                   installView(viewLayout, RIGHT, "ViewSite east");
-                   installView(viewLayout, MIDDLE, "ViewSite center");
+                // Instal views into the ViewLayout's view sites
+                installView(viewLayout, TOP, "ViewSite north");
+                installView(viewLayout, BOTTOM, "ViewSite south");
+                installView(viewLayout, LEFT, "ViewSite west");
+                installView(viewLayout, RIGHT, "ViewSite east");
+                installView(viewLayout, MIDDLE, "ViewSite center");
         
-                   // Make the main frame visible by setting the ViewContent
-                   ViewContent viewContent = viewSite.getViewContent();
-                   viewContent.setComponent(frame);
-               }
+                // Make the main frame visible by setting the ViewContent
+                ViewContent viewContent = viewSite.getViewContent();
+                viewContent.setComponent(frame);
+            }
     
-               private DefaultViewLayout createViewLayout(Context viewContext, Container viewContainer) {
-                   DefaultViewLayout viewLayout = new DefaultViewLayout(viewContext, viewContainer);
+            private DefaultViewLayout createViewLayout(Context viewContext, Container viewContainer) {
+                DefaultViewLayout viewLayout = new DefaultViewLayout(viewContext, viewContainer);
     
-                   viewLayout.addViewSite(TOP, NORTH);
-                   viewLayout.addViewSite(BOTTOM, SOUTH);
-                   viewLayout.addViewSite(LEFT, WEST);
-                   viewLayout.addViewSite(RIGHT, EAST);
-                   viewLayout.addViewSite(MIDDLE, CENTER);
+                viewLayout.addViewSite(TOP, NORTH);
+                viewLayout.addViewSite(BOTTOM, SOUTH);
+                viewLayout.addViewSite(LEFT, WEST);
+                viewLayout.addViewSite(RIGHT, EAST);
+                viewLayout.addViewSite(MIDDLE, CENTER);
     
-                   return viewLayout;
-               }
+                return viewLayout;
+            }
     
-               private void installView(ViewLayout viewLayout, String viewSiteName, String areaName) {
-                   ViewSiteView viewSiteView = new ViewSiteView(areaName);
-                   viewLayout.install(viewSiteName, viewSiteView);
-               } 
+            private void installView(ViewLayout viewLayout, String viewSiteName, String areaName) {
+                ViewSiteView viewSiteView = new ViewSiteView(areaName);
+                viewLayout.install(viewSiteName, viewSiteView);
+            } 
         
-               // Uninstall in reverse order
-               @Override
-               public void uninstall() {
-                   if (viewSite == null) {
-                       return;
-                   }
+            // Uninstall in reverse order
+            @Override
+            public void uninstall() {
+                if (viewSite == null) {
+                    return;
+                }
         
-                   viewLayout.dispose();
+                viewLayout.dispose();
         
-                   Context viewContext = viewSite.getViewContext();
-                   viewContext.remove(ViewLayout.class);
-                   viewLayout = null;
+                Context viewContext = viewSite.getViewContext();
+                viewContext.remove(ViewLayout.class);
+                viewLayout = null;
         
-                   ViewContent viewContent = viewSite.getViewContent();
-                   viewContent.setComponent(null);
+                ViewContent viewContent = viewSite.getViewContent();
+                viewContent.setComponent(null);
         
-                   frame.dispose();
-                   frame = null;
+                frame.dispose();
+                frame = null;
         
-                   viewSite = null;
-               }
-           }
+                viewSite = null;
+            }
+        }
 
 3. Create a main class
 
