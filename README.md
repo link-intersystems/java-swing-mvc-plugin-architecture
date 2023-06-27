@@ -325,4 +325,57 @@ Here is a simple example of how my architecture works:
     
        }
 
+### Make the architecture pluggable
 
+In order to create a pluggable MVC architecture I'm using Java's `ServiceLoader` and interfaces that a
+view uses in order to install other views in it's `ViewLayout`. These other views are located using the
+`ServiceLoader`. E.g.
+
+1. Define a `ViewLayoutContribution` interface so that other views can provide a contribution to the view layout.
+
+        public interface ViewLayoutContribution {
+        
+            void install(ViewLayout viewLayout);
+        
+            void uninstall(ViewLayout viewLayout);
+        }
+
+2. The main view loads and installs all views
+
+        private ApplicationViewLayoutMediator initLayoutContributions(ViewLayout viewLayout) {
+            ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class);
+    
+            ApplicationViewLayoutMediator viewLayoutMediator = new ApplicationViewLayoutMediator(viewLayout);
+            viewContributionAction.setTaskActionListener(viewLayoutMediator);
+    
+            ActionTrigger.performAction(this, viewContributionAction);
+    
+            return viewLayoutMediator;
+        }
+ 
+3. The action's `TaskListener` installs the view
+
+        public class ApplicationViewLayoutMediator implements TaskActionListener<List<ViewLayoutContribution>, Void> {
+    
+            private final ViewLayout viewLayout;
+    
+            private final List<ViewLayoutContribution> viewLayoutContributions = new ArrayList<>();
+    
+            public ApplicationViewLayoutMediator(ViewLayout viewLayout) {
+                this.viewLayout = requireNonNull(viewLayout);
+            }
+    
+            @Override
+            public void done(List<ViewLayoutContribution> result) {
+                result.forEach(this::installView);
+            }
+    
+            private void installView(ViewLayoutContribution viewLayoutContribution) {
+                viewLayoutContribution.install(viewLayout);
+                viewLayoutContributions.add(viewLayoutContribution);
+            }
+    
+            public void dispose() {
+                viewLayoutContributions.forEach(vc -> vc.uninstall(viewLayout));
+            }
+        }

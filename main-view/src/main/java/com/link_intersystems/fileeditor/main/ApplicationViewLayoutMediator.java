@@ -9,27 +9,27 @@ import java.util.List;
 
 import static java.util.Objects.*;
 
-public class ApplicationViewLayoutMediator implements TaskActionListener<List<ViewLayoutContribution>, Void> {
+        public class ApplicationViewLayoutMediator implements TaskActionListener<List<ViewLayoutContribution>, Void> {
 
-    private final ViewLayout viewLayout;
+            private final ViewLayout viewLayout;
 
-    private final List<ViewLayoutContribution> viewLayoutContributions = new ArrayList<>();
+            private final List<ViewLayoutContribution> viewLayoutContributions = new ArrayList<>();
 
-    public ApplicationViewLayoutMediator(ViewLayout viewLayout) {
-        this.viewLayout = requireNonNull(viewLayout);
-    }
+            public ApplicationViewLayoutMediator(ViewLayout viewLayout) {
+                this.viewLayout = requireNonNull(viewLayout);
+            }
 
-    @Override
-    public void done(List<ViewLayoutContribution> result) {
-        result.forEach(this::installView);
-    }
+            @Override
+            public void done(List<ViewLayoutContribution> result) {
+                result.forEach(this::installView);
+            }
 
-    private void installView(ViewLayoutContribution viewLayoutContribution) {
-        viewLayoutContribution.install(viewLayout);
-        viewLayoutContributions.add(viewLayoutContribution);
-    }
+            private void installView(ViewLayoutContribution viewLayoutContribution) {
+                viewLayoutContribution.install(viewLayout);
+                viewLayoutContributions.add(viewLayoutContribution);
+            }
 
-    public void dispose() {
-        viewLayoutContributions.forEach(vc -> vc.uninstall(viewLayout));
-    }
-}
+            public void dispose() {
+                viewLayoutContributions.forEach(vc -> vc.uninstall(viewLayout));
+            }
+        }
