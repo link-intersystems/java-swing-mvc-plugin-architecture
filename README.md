@@ -327,9 +327,9 @@ Here is a simple example of how my architecture works:
 
 ### Make the architecture pluggable
 
-In order to create a pluggable MVC architecture I'm using Java's `ServiceLoader` and interfaces that a
+In order to create a pluggable MVC architecture I'm using Java's [`ServiceLoader`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ServiceLoader.html) and interfaces that a
 view uses in order to install other views in it's `ViewLayout`. These other views are located using the
-`ServiceLoader`. E.g.
+[`ServiceLoader`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ServiceLoader.html). E.g.
 
 1. Define a `ViewLayoutContribution` interface so that other views can provide a contribution to the view layout.
 
