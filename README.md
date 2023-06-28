@@ -6,9 +6,7 @@ This repository contains a Java Swing example application that is based on
 a pluggable MVC architecture. It is an attempt to show how pluggable user interfaces
 can be implemented, and **the basic concepts are not constraint to Java Swing at all**.
 
-## The Architecture
-
-### MVC
+## MVC
 
 Even though the model-view-controller pattern is widely used and well documented, the way how the different MVC components,
 like view, model and controller, are instantiated and wired with the infrastructure is not often discussed.
@@ -18,19 +16,11 @@ be seen as a starting point for discussions about that topic.
 
 You can also see this repository as a playground to refactor and try out different ways of implementing an MVC pattern.
 
-#### Yet another MVC
-
-Not only the way how models, views and controllers are instantiated and wired with the infrastructure differs, there are
-also a lot of different interpretations of the MVC structure itself.
-
-A lot of different views of the MVC has been described over the time and I would like to show you a few, so that
-you can see what I mean with "Yet another MVC".
-
-##### MVC by Trygve Reenskaug
+### The original MVC by Trygve Reenskaug
 
 The MVC pattern was invented in 1979 by [Trygve Reenskaug](https://en.wikipedia.org/wiki/Trygve_Reenskaug).
 
-In his work he described the pattern with the following diagram:
+In [his work](https://folk.universitetetioslo.no/trygver/themes/mvc/mvc-index.html) he described the pattern with the following diagram:
 
 ![Trygve Reenskaug - MVC](res/mvc-trygve-reenskaug-1979.png)
 
@@ -60,10 +50,24 @@ models as it's input and some models as it's output.
 
 ![MVC - wikipedia - english](res/simple-mvc-link-intersystems-20-07-2023.png)
 
-Now that we have a good overview about the initial MVC diagram, we should take a look at other 
-diagrams that you can find on the internet.
 
-##### MVC - wikipedia - english
+### Yet another MVC
+
+Now that we have a good understanding about the original MVC diagram, we should take a look at other
+diagrams that one can find on the internet. 
+
+There are a lot of different interpretations of the MVC that led to a lot of different diagrams.
+Those diagrams created a lot of different mental models in the minds of developers. I guess this is the
+reason why developers often implement MVC in different ways and  this can lead to a lot of discussions
+in development teams. 
+
+I guess that this issue is not restricted to MVC. We use a lot of terms that often lead to different
+mental models. Therefore, they lead to misunderstanding and discussions. These gaps can significantly slow
+down the development velocity of a software project.
+
+Since a lot of different views of the MVC has been described over the time. I would like to show you a some, so that you can see what I mean with "Yet another MVC".
+
+#### MVC - wikipedia - english
 
 In the english wikipedia article the MVC pattern is described using a slightly different diagram.
 
@@ -73,7 +77,7 @@ As you can see the term `Tool` that Trygve used does not exist anymore.
 Also, the associations between the components have directions now. But the biggest difference is that
 controllers and view do not have any association between them.
 
-##### MVC - wikipedia - german
+#### MVC - wikipedia - german
 
 In the german wikipedia article the MVC pattern looks also a little different.
 
@@ -83,7 +87,7 @@ Here you can see the association between the controller and the view. And you ca
 dependencies in both directions, even though the dependency from the view to the controller is a dashed arrow 
 (a less strong dependency). The same applies between the view and model.
 
-##### MVC - Freecodecamp.org
+#### MVC - Freecodecamp.org
 
 Finally, I took a look at yet another description in a [blog post](https://www.freecodecamp.org/news/the-model-view-controller-pattern-mvc-architecture-and-frameworks-explained/) on freecodecamp.org that was written by Rafael D. Hernandez on April 19, 2021.
 
@@ -93,14 +97,17 @@ In this diagram you don't see any dependencies between the view and model at all
 on the controller.
 
 
-#### The right MVC!?
+### The right MVC!?
 
-I guess it is a normal process that a pattern evolves over time. 
-It might have to do with technology changes, but it might also be in consequence of 
-translation errors between different languages that lead to a different understanding.
+A pattern might evolve over time. It might have to do with technology changes, but it might also be in consequence of 
+translation errors between different languages that lead to a different understanding. 
+
+No matter what the cause is, we should work hard to keep a common understanding of each term in software development.
+Because we can not effectively communicate with each other if a term leads to a different mental model in each of us. 
 
 Since there are so many different ways one thinks about the MVC pattern. 
-I would like to add my point of view here. The diagram I will show you is taken from my blog post [The MVC pattern implemented with Java Swing](https://link-intersystems.com/blog/2013/07/20/the-mvc-pattern-implemented-with-java-swing/) that I wrote in 2013.
+I would like to try to consolidate the views and focus on the basic idea of MVC. 
+The diagram I will show you is taken from my blog post [The MVC pattern implemented with Java Swing](https://link-intersystems.com/blog/2013/07/20/the-mvc-pattern-implemented-with-java-swing/) that I wrote in 2013.
 I will explain soon why MVC looks like the following diagram to me and why I think it makes sense compared to the others above.
 
 ![MVC - wikipedia - english](res/mvc-link-intersystems-20-07-2023.png)
