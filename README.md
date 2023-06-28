@@ -6,6 +6,23 @@ This repository contains a Java Swing example application that is based on
 a pluggable MVC architecture. It is an attempt to show how pluggable user interfaces
 can be implemented, and **the basic concepts are not constraint to Java Swing at all**.
 
+# TOC
+
+- [MVC](#mvc)
+  - [The original MVC by Trygve Reenskaug](#the-original-mvc-by-trygve-reenskaug)
+  - [Yet another MVC](#yet-another-mvc)
+    - [MVC - wikipedia - english](#mvc---wikipedia---english)
+    - [MVC - wikipedia - german](#mvc---wikipedia---german)
+    - [MVC - Freecodecamp.org](#mvc---freecodecamporg)
+  - [The right MVC!?](#the-right-mvc)
+    - [Discussion about 'my' MVC style](#discussion-about-my-mvc-style)
+      - [Model](#model)
+      - [View](#view)
+      - [Controller](#controller)
+  - [MVC Instantiation](#mvc-instantiation)
+  - [MVC Architecture in this Repository](#mvc-architecture-in-this-repository)
+  - [Make the architecture pluggable](#make-the-architecture-pluggable)
+
 ## MVC
 
 Even though the model-view-controller pattern is widely used and well documented, the way how the different MVC components,
@@ -112,7 +129,7 @@ I will explain soon why MVC looks like the following diagram to me and why I thi
 
 ![MVC - wikipedia - english](res/mvc-link-intersystems-20-07-2023.png)
 
-##### Discussion about my MVC style
+#### Discussion about 'my' MVC style
 
 When I created my mental model about the MVC, while reading all the other explanations about MVC, I tried to focus on software development principles. 
 One principle is the dependency inversion principle. It tells us that
@@ -123,7 +140,7 @@ As a result I asked myself
 
 > Which of the components is the most abstract and which is the most detailed?
 
-###### Model
+##### Model
 
 The model is the most abstract, since it only captures a mental model that a user has in his mind. 
 
@@ -133,20 +150,20 @@ emits events when it's state changes to an observer. The model does not know who
 It only informs someone that it changed. Thus, the dependency is effectively not a direct dependency to the view.
 Itself is inversed by applying the dependency inversion principle.
 
-###### View
+##### View
 
 In contrast to the model the view is the most detailed component since it defines how a model is presented on the screen.
 So the view should depend on all other MVC components, but not vice versa. You can also have different views for the same model.
 As a result of a user interaction the view must execute a controller, so it has a dependency to the controller.
 It also has a dependency to the model, because it is the visual representation of the model.
 
-###### Controller
+##### Controller
 
 The controller is something in between the view and the model. It implements how models are modifies. Therefore, it has
 dependencies to models. The controller uses some models as it's input and some models as it's output. E.g. when you perform
 a login, the controller reads the models that are connected to the username and password fields and updates a user model.
 
-#### MVC Instantiation
+## MVC Instantiation
 
 But no matter how you see the MVC and which diagram makes more sense to you, there is still one question open in all these diagrams.
 
@@ -174,7 +191,7 @@ an MVCPart instantiates views that can instantiate other views and therefore MVC
 You will also have problems when you want to instantiate a MVCPart (model-view-controller) multiple times, because you need more than one instance and
 these instances can not be qualified since they might be created as a result of a user action. So you can not use e.g. @Qualifier annotations in spring.
 
-#### MVC Application State
+### MVC Application State
 
 Another tricky issue is the application state management.
 
@@ -187,7 +204,7 @@ Also, the context might change in the view hierarchy. E.g. there might be some c
 of a context.
 
 
-### MVC Architecture in this Repository
+## MVC Architecture in this Repository
 
 Finally, I came up with the architecture in this repository. Like I said at the beginning "It is one way of solving the instantiation, wiring and application state issues".
 So don't be too cruel with me if you don't like my way. You should see it as a starting point for discussions and this repository as a playground for refactoring.
@@ -361,7 +378,7 @@ Here is a simple example of how my architecture works:
     
        }
 
-### Make the architecture pluggable
+## Make the architecture pluggable
 
 In order to create a pluggable MVC architecture I'm using Java's [`ServiceLoader`](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/ServiceLoader.html) and interfaces that a
 view uses in order to install other views in it's `ViewLayout`. These other views are located using the
