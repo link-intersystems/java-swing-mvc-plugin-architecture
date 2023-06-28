@@ -34,6 +34,35 @@ In his work he described the pattern with the following diagram:
 
 ![Trygve Reenskaug - MVC](res/mvc-trygve-reenskaug-1979.png)
 
+Trygve Reenskaug did not only introduce the terms model, view controller. He also introduced the term tool 
+and mental model. The mental model is the essential part of the diagram, because it makes clear that
+a model should be something from the user's perspective. E.g. when you think about a circuit logic your brain
+builds a mental model. You probably think of circuits as tiny rectangular entities that have pins to connect them.
+The MVC model should be close to the way a user thinks about something. So you would find terms like circuit, pin, connector
+and so in the model. He also introduced the term tool and shows that views and controllers together form a tool.
+
+Here is a screenshot from an eclipse application that is used to learn circuit basics. 
+
+![MVC - wikipedia - english](res/eclipse-gef-circuit.gif)
+
+You can see that the eclipse GEF framework is very close to Trygve Reenskaug's definition of MVC.
+They use tools that a user can pick from a palette. You can also see that the visual representation is close to
+the way we think about circuits (from a beginners perspective) - our mental model.
+
+Whenever you have a software that can be intuitively used, the software's model is close to the mental model of the user.
+If not, there is usually a gap between the mental and computer model.
+
+The last important thing that other diagrams usually omit is the multiplicity, which often leads to the
+assumption that there is always one model, one view and one controller connected. If you believe this way,
+you should rethink your mental model about the MVC. I wrote a blog named [The MVC pattern implemented with java swing](https://link-intersystems.com/blog/2013/07/20/the-mvc-pattern-implemented-with-java-swing/) back in 2013.
+In this blog I tried to show that a controller can have more than one model. Usually a controller uses some
+models as it's input and some models as it's output.
+
+![MVC - wikipedia - english](res/simple-mvc-link-intersystems-20-07-2023.png)
+
+Now that we have a good overview about the initial MVC diagram, we should take a look at other 
+diagrams that you can find on the internet.
+
 ##### MVC - wikipedia - english
 
 In the english wikipedia article the MVC pattern is described using a slightly different diagram.

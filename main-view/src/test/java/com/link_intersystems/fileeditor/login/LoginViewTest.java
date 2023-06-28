@@ -1,7 +1,6 @@
 package com.link_intersystems.fileeditor.login;
 
 import com.link_intersystems.fileeditor.services.login.LoginService;
-import com.link_intersystems.fileeditor.services.login.LoginServiceMock;
 import com.link_intersystems.swing.view.RootViewSite;
 import com.link_intersystems.swing.view.ViewContent;
 import com.link_intersystems.swing.view.ViewSite;
@@ -26,7 +25,8 @@ class LoginViewTest {
 
     @BeforeEach
     void setUp() {
-        loginService = new LoginServiceMock();
+        loginService = new LoginService();
+        loginService.registerUser("name", "pass");
         loginView = new TestableLoginView();
 
         viewSite = new RootViewSite() {
@@ -53,7 +53,7 @@ class LoginViewTest {
     }
 
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         scheduledExecutorService.shutdown();
     }
 
@@ -62,7 +62,7 @@ class LoginViewTest {
         loginView.install(viewSite);
 
         loginView.setUsername("name");
-        loginView.setPassword("name");
+        loginView.setPassword("pass");
 
         loginView.performLogin();
 

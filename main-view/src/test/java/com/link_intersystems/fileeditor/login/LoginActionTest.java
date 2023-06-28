@@ -2,7 +2,6 @@ package com.link_intersystems.fileeditor.login;
 
 import com.link_intersystems.fileeditor.services.login.LoginResponseModel;
 import com.link_intersystems.fileeditor.services.login.LoginService;
-import com.link_intersystems.fileeditor.services.login.LoginServiceMock;
 import com.link_intersystems.swing.action.ActionTrigger;
 import com.link_intersystems.swing.action.concurrent.DirectTaskExecutor;
 import com.link_intersystems.swing.action.concurrent.TaskActionListener;
@@ -21,7 +20,8 @@ class LoginActionTest {
 
     @BeforeEach
     void setUp() {
-        LoginService loginService = new LoginServiceMock();
+        LoginService loginService = new LoginService();
+        loginService.registerUser("name", "pass");
         loginAction = new LoginAction(loginService);
         loginAction.setTaskExecutor(new DirectTaskExecutor());
     }
@@ -30,7 +30,7 @@ class LoginActionTest {
     void perform() throws BadLocationException {
         LoginModel loginModel = loginAction.getLoginModel();
         loginModel.getUsernameDocument().insertString(0, "name", null);
-        loginModel.getPasswordDocument().insertString(0, "name", null);
+        loginModel.getPasswordDocument().insertString(0, "pass", null);
 
         TaskActionListener taskActionListener = mock(TaskActionListener.class);
         loginAction.setTaskActionListener(taskActionListener);
