@@ -11,6 +11,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 
+import static javax.swing.JFileChooser.*;
+
 public class OpenFileView extends AbstractView {
 
     @Override
@@ -19,9 +21,9 @@ public class OpenFileView extends AbstractView {
         Component parentComponent = viewContent.getParent();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new FileNameExtensionFilter("Text-Files", "txt", "xml", "json", "ini"));
-        int returnVal = fileChooser.showOpenDialog(parentComponent);
+        int returnVal = openFileChooser(parentComponent, fileChooser);
 
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             Context viewContext = viewSite.getViewContext();
             EditorManager editorManager = viewContext.get(EditorManager.class);
@@ -31,5 +33,7 @@ public class OpenFileView extends AbstractView {
         uninstall();
     }
 
-
+    protected int openFileChooser(Component parentComponent, JFileChooser fileChooser) {
+        return fileChooser.showOpenDialog(parentComponent);
+    }
 }
