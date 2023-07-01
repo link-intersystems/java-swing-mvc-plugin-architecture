@@ -22,5 +22,12 @@
             <artifactId>editor</artifactId>
             <version>1</version>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.mvc</groupId>
+            <artifactId>shared</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>1</version>
+        </dependency>
     </dependencies>
 </project>

@@ -46,10 +46,14 @@ public class FileEditorView extends AbstractView implements TaskActionListener<D
         viewContent.setComponent(editorScrollPane);
 
         File file = fileEditorInput.getFile();
-        OpenFileAction openFileAction = new OpenFileAction(file);
+        OpenFileAction openFileAction = getOpenFileAction(file);
         openFileAction.setTaskActionListener(this);
 
         ActionTrigger.performAction(this, openFileAction);
+    }
+
+    protected OpenFileAction getOpenFileAction(File file) {
+        return new OpenFileAction(file);
     }
 
     @Override
