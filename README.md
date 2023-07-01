@@ -401,8 +401,8 @@ view uses in order to install other views in it's `ViewLayout`. These other view
 2. The main view loads and installs all views
 
         private ApplicationViewLayoutMediator initLayoutContributions(ViewLayout viewLayout) {
-            ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class);
-    
+            ServiceLoaderAction<ViewLayoutContribution> viewContributionAction = new ServiceLoaderAction<>(ViewLayoutContribution.class); 
+
             ApplicationViewLayoutMediator viewLayoutMediator = new ApplicationViewLayoutMediator(viewLayout);
             viewContributionAction.setTaskActionListener(viewLayoutMediator);
     
@@ -410,8 +410,12 @@ view uses in order to install other views in it's `ViewLayout`. These other view
     
             return viewLayoutMediator;
         }
+   
+   The `ServiceLoaderAction` is an implementation of a [AbstractTaskAction](https://github.com/link-intersystems/lis-commons/blob/lis-commons-1.9.6/lis-commons-swing/src/main/java/com/link_intersystems/swing/action/concurrent/AbstractTaskAction.java) that you can find in my
+   [lis-commons-swing](https://github.com/link-intersystems/lis-commons/tree/main/lis-commons-swing) library that is available in the [maven central repository](https://mvnrepository.com/artifact/com.link-intersystems.commons/lis-commons-swing).
+
  
-3. The action's `TaskListener` installs the view
+3. The action's [`TaskListener`](https://github.com/link-intersystems/lis-commons/blob/lis-commons-1.9.6/lis-commons-swing/src/main/java/com/link_intersystems/swing/action/concurrent/TaskActionListener.java) installs the view
 
         public class ApplicationViewLayoutMediator implements TaskActionListener<List<ViewLayoutContribution>, Void> {
     
