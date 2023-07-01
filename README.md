@@ -6,7 +6,7 @@ This repository contains a Java Swing example application that is based on
 a pluggable MVC architecture. It is an attempt to show how pluggable user interfaces
 can be implemented, and **the basic concepts are not constraint to Java Swing at all**.
 
-# TOC
+# Table Of Contents
 
 - [MVC](#mvc)
   - [The original MVC by Trygve Reenskaug](#the-original-mvc-by-trygve-reenskaug)
