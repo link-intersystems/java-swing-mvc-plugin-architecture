@@ -22,6 +22,7 @@ can be implemented, and **the basic concepts are not constraint to Java Swing at
   - [MVC Instantiation](#mvc-instantiation)
   - [MVC Architecture in this Repository](#mvc-architecture-in-this-repository)
   - [Make the architecture pluggable](#make-the-architecture-pluggable)
+- [Any Questions](#any-questions)
 
 ## MVC
 
@@ -436,3 +437,11 @@ view uses in order to install other views in it's `ViewLayout`. These other view
                 viewLayoutContributions.forEach(vc -> vc.uninstall(viewLayout));
             }
         }
+
+## Any Questions?
+
+If you have any questions about
+
+- this example application you can [start a discussion](https://github.com/link-intersystems/java-swing-mvc-plugin-architecture/discussions).
+- the MVC architecture in general you can either browse [my answers on stackoverflow](https://stackoverflow.com/search?q=user%3A974186+model-view-controller+swing) or post
+  a new question. or [contact me](https://link-intersystems.com/contact-us/) for trainings and coaching or book a session on [![codementor.io](https://www.codementor.io/m-badges/renlink/book-session.svg)](https://www.codementor.io/@renlink?refer=badge).
